@@ -1,5 +1,8 @@
 # WebDataBase
 
+course -> 团队
+user   -> 个人
+
 ## 数据表说明
 
 导入数据:
