@@ -69,65 +69,100 @@
             </form>
         </div>
     </div>
-
-    <script>
-        // 打开注册弹窗
-        const registerBtn = document.querySelector('.register-btn');
-        const registerModal = document.getElementById('register-modal');
-        const closeBtn = document.querySelector('.close-btn');
-
-        registerBtn.addEventListener('click', () => {
-            registerModal.style.display = 'block';
-        });
-
-        closeBtn.addEventListener('click', () => {
-            registerModal.style.display = 'none';
-        });
-
-        // 提交注册表单
-        document.getElementById('register-form').addEventListener('submit', async function (e) {
-            e.preventDefault(); // 阻止表单默认提交
-
-            const email = document.getElementById('register-email').value;
-            const nickname = document.getElementById('nickname').value;
-            const color = document.getElementById('color').value;
-
-            try {
-                // 调用后端 API 插入数据
-                const response = await fetch("http://localhost:5000/api/register", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        nickname: nickname,
-                        color: color,
-                        acnum: 0,
-                        allnum: 0,
-                    }),
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    alert("注册成功！");
-                    registerModal.style.display = 'none';
-                } else {
-                    alert("注册失败：" + result.message);
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("注册失败，请稍后重试。");
-            }
-        });
-
-        // 防止点击弹窗外部关闭
-        window.addEventListener('click', (event) => {
-            if (event.target === registerModal) {
-                registerModal.style.display = 'none';
-            }
-        });
-    </script>
+	
+	<script>
+		// 打开注册弹窗
+		const registerBtn = document.querySelector('.register-btn');
+		const registerModal = document.getElementById('register-modal');
+		const closeBtn = document.querySelector('.close-btn');
+	
+		// 打开注册弹窗
+		registerBtn.addEventListener('click', () => {
+			registerModal.style.display = 'block';
+		});
+	
+		// 关闭注册弹窗
+		closeBtn.addEventListener('click', () => {
+			registerModal.style.display = 'none';
+		});
+	
+		// 登录逻辑
+		document.getElementById("login-form").addEventListener("submit", async function (e) {
+			e.preventDefault(); // 阻止表单默认提交
+	
+			const email = document.getElementById("email").value;
+			const password = document.getElementById("password").value; // 密码目前无用
+			const isBackend = document.getElementById("is-backend").checked;
+	
+			try {
+				// 调用后端 API 验证登录
+				const response = await fetch("http://localhost:5000/api/login", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({ email, isBackend }),
+				});
+	
+				const result = await response.json();
+	
+				if (result.success) {
+					// 登录成功，根据返回的 URL 跳转
+					window.location.href = result.redirectUrl;
+				} else {
+					alert("登录失败：" + result.message);
+				}
+			} catch (error) {
+				console.error("Error:", error);
+				alert("登录失败，请稍后重试。");
+			}
+		});
+	
+		// 提交注册表单逻辑
+		document.getElementById('register-form').addEventListener('submit', async function (e) {
+			e.preventDefault(); // 阻止表单默认提交
+	
+			const email = document.getElementById('register-email').value;
+			const nickname = document.getElementById('nickname').value;
+			const color = document.getElementById('color').value;
+	
+			try {
+				// 调用后端 API 插入数据
+				const response = await fetch("http://localhost:5000/api/register", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json",
+					},
+					body: JSON.stringify({
+						email: email,
+						nickname: nickname,
+						color: color,
+						acnum: 0,
+						allnum: 0,
+					}),
+				});
+	
+				const result = await response.json();
+	
+				if (result.success) {
+					alert("注册成功！");
+					registerModal.style.display = 'none'; // 关闭注册弹窗
+				} else {
+					alert("注册失败：" + result.message);
+				}
+			} catch (error) {
+				console.error("Error:", error);
+				alert("注册失败，请稍后重试。");
+			}
+		});
+	
+		// 防止点击弹窗外部关闭注册框
+		window.addEventListener('click', (event) => {
+			if (event.target === registerModal) {
+				registerModal.style.display = 'none';
+			}
+		});
+	</script>
+	
 </body>
 </html>

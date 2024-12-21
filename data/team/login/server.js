@@ -80,6 +80,31 @@ app.post("/api/check-email", (req, res) => {
     });
 });
 
+app.post("/api/login", (req, res) => {
+    const { email, isBackend } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    const query = "SELECT COUNT(*) AS count FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
+    db.query(query, [email], (err, results) => {
+        if (err) {
+            console.error("数据库查询错误:", err);
+            return res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+
+        const count = results[0].count;
+        if (count > 0) {
+            // 登录成功，根据是否勾选“进入后台”返回不同的跳转 URL
+            const redirectUrl = isBackend ? "http://localhost:8081/backend" : "http://localhost:8080/frontend";
+            res.json({ success: true, redirectUrl });
+        } else {
+            res.status(401).json({ success: false, message: "学号不存在" });
+        }
+    });
+});
+
 // 当访问根路径时重定向到 login.html
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "login.html"));
