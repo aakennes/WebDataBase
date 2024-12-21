@@ -3,6 +3,25 @@
 course -> 团队
 user   -> 个人
 
+## 环境要求
+
+环境要求:
+
+```
+npm 10.7.0+
+mysql 5.7+
+```
+
+
+登录界面使用node.js搭建, 在team文件夹中使用以下指令初始化并运行(需要保证5000端口未被占用):
+
+```bash
+npm install
+npm start
+```
+
+
+
 ## 数据表说明
 
 导入数据:
@@ -16,19 +35,38 @@ LOAD DATA LOCAL INFILE 'data/solution.csv'
      IGNORE 1 ROWS;
 ```
 
+导出数据:
+
+```sql
+SELECT * 
+INTO OUTFILE '../data/user.csv'
+FIELDS TERMINATED BY ',' 
+ENCLOSED BY '"' 
+LINES TERMINATED BY '\n'
+FROM user;
+```
+
 由于生数据存在一些冗余列, 所以对生数据进行了缩减, 只保留有效列
 
 同时除了 user.csv 包含全体数据外, 其他数据均只包含 cid = 12, 13, 14
 
 user.csv 在生数据中也已清除密码, 现在的前台可以不检查密码直接通过
 
+导出sql(非必要进制导出sql到install.sql中):
+
+
+
 ### user.csv
 
 主键 : "uid"
 
-其他键 : "gid","nickname","email"
+其他键 : "gid","nickname","email","color","acnum","allnum"
 
 无用键 : "qq","tel","realname","school","words","signup_time","removed","password"
+
+### user_message.csv
+
+
 
 ### message.csv
 

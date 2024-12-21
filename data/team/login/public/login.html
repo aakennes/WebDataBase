@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生登录</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1 class="login-title">学生登录</h1>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">学号</label>
+                    <input type="text" id="email" name="email" placeholder="请输入学号" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="is-backend" name="is-backend">
+                        进入后台
+                    </label>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="login-btn">登录</button>
+                    <button type="button" class="register-btn">注册</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 注册弹窗 -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>注册新用户</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="register-email">学号</label>
+                    <input type="text" id="register-email" name="email" placeholder="请输入学号" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">密码</label>
+                    <input type="password" id="register-password" name="password" placeholder="请输入密码">
+                </div>
+                <div class="form-group">
+                    <label for="nickname">用户名</label>
+                    <input type="text" id="nickname" name="nickname" placeholder="请输入用户名" required>
+                </div>
+                <div class="form-group">
+                    <label for="color">头像颜色</label>
+                    <select id="color" name="color" required>
+                        <option value="red">红色</option>
+                        <option value="pink">粉色</option>
+                        <option value="orange">橙色</option>
+                        <option value="yellow">黄色</option>
+                        <option value="green">绿色</option>
+                        <option value="blue">蓝色</option>
+                        <option value="purple">紫色</option>
+                        <option value="black">黑色</option>
+                        <option value="white">白色</option>
+                    </select>
+                </div>
+                <button type="submit" class="register-submit-btn">提交</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 打开注册弹窗
+        const registerBtn = document.querySelector('.register-btn');
+        const registerModal = document.getElementById('register-modal');
+        const closeBtn = document.querySelector('.close-btn');
+
+        registerBtn.addEventListener('click', () => {
+            registerModal.style.display = 'block';
+        });
+
+        closeBtn.addEventListener('click', () => {
+            registerModal.style.display = 'none';
+        });
+
+        // 提交注册表单
+        document.getElementById('register-form').addEventListener('submit', async function (e) {
+            e.preventDefault(); // 阻止表单默认提交
+
+            const email = document.getElementById('register-email').value;
+            const nickname = document.getElementById('nickname').value;
+            const color = document.getElementById('color').value;
+
+            try {
+                // 调用后端 API 插入数据
+                const response = await fetch("http://localhost:5000/api/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        nickname: nickname,
+                        color: color,
+                        acnum: 0,
+                        allnum: 0,
+                    }),
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert("注册成功！");
+                    registerModal.style.display = 'none';
+                } else {
+                    alert("注册失败：" + result.message);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("注册失败，请稍后重试。");
+            }
+        });
+
+        // 防止点击弹窗外部关闭
+        window.addEventListener('click', (event) => {
+            if (event.target === registerModal) {
+                registerModal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
