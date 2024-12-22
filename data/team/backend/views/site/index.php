@@ -110,8 +110,8 @@
                         <div class="col-lg-3 col-6">
                             <div class="small-box text-bg-primary">
                                 <div class="inner">
-                                    <h3>150</h3>
-                                    <p>New Orders</p>
+                                    <h3><?= $submitAllCount ?></h3>
+                                    <p>总提交数</p>
                                 </div>
                                 <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
@@ -119,8 +119,8 @@
                         <div class="col-lg-3 col-6">
                             <div class="small-box text-bg-success">
                                 <div class="inner">
-                                    <h3>53<sup class="fs-5">%</sup></h3>
-                                    <p>Bounce Rate</p>
+                                    <h3><?= $accuracy ?><sup class="fs-5">%</sup></h3>
+                                    <p>正确率</p>
                                 </div>
                                 <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
@@ -128,8 +128,8 @@
                         <div class="col-lg-3 col-6">
                             <div class="small-box text-bg-warning">
                                 <div class="inner">
-                                    <h3>44</h3>
-                                    <p>User Registrations</p>
+                                    <h3><?= $passstu ?></h3>
+                                    <p>通过人数</p>
                                 </div>
                                 <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
@@ -137,8 +137,8 @@
                         <div class="col-lg-3 col-6">
                             <div class="small-box text-bg-danger">
                                 <div class="inner">
-                                    <h3>65</h3>
-                                    <p>Unique Visitors</p>
+                                    <h3><?= $allsubmit ?></h3>
+                                    <p>总提交人数</p>
                                 </div>
                                 <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
@@ -180,14 +180,14 @@
     <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js" crossorigin="anonymous"></script>
 
     <script>
-        const sales_chart_options = {
+        const submitsituation = {
             series: [{
-                name: "Digital Goods",
-                data: [28, 48, 40, 19, 86, 27, 90],
+                name: "总提交次数",
+                data: <?= json_encode($total_submissions, JSON_NUMERIC_CHECK) ?>,
             },
             {
-                name: "Electronics",
-                data: [65, 59, 80, 81, 56, 55, 40],
+                name: "通过次数",
+                data: <?= json_encode($passed_submissions, JSON_NUMERIC_CHECK) ?>,
             }],
             chart: {
                 height: 300,
@@ -198,14 +198,12 @@
             },
             xaxis: {
                 type: "datetime",
-                categories: [
-                    "2023-01-01", "2023-02-01", "2023-03-01", "2023-04-01", "2023-05-01", "2023-06-01", "2023-07-01",
-                ],
+                categories: <?= json_encode($dates) ?>,
             },
         };
 
-        const sales_chart = new ApexCharts(document.querySelector("#revenue-chart"), sales_chart_options);
-        sales_chart.render();
+        const submitsituation_chart = new ApexCharts(document.querySelector("#revenue-chart"), submitsituation);
+        submitsituation_chart.render();
 
         const map = new jsVectorMap({
             selector: "#world-map",

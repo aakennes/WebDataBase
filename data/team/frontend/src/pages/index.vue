@@ -1,84 +1,49 @@
 <template>
 
-    <div class="container">
+  <div class="container">
     <!-- 我的课程部分 -->
     <div v-if="courses.length > 0" class="section">
       <h3>我的课程</h3>
       <div class="courses-grid">
-        <div v-for="course in courses" :key="course.id" class="card">
-          <p>{{ course.name }}</p>
+        <div v-for="course in courses" :key="course.cid" class="card">
+          <a :href="`ProblemSet.html?cid=${course.cid}`" class="title">{{ course.title }}</a>
+          <a :href="`ProblemSet.html?cid=${course.cid}`" class="description">{{ course.description }}</a>
           <button v-if="course.status === '未加入'" class="btn btn-primary">加入课程</button>
           <p v-else>已加入</p>
         </div>
       </div>
     </div>
-
-    <!-- 竞赛考试部分 -->
-    <div v-if="exams.length > 0 || competitions.length > 0" class="section">
-      <h3>竞赛考试</h3>
-      <!-- 考试 -->
-      <div v-for="exam in exams" :key="exam.id" class="card exam">
-        <h4 class="title text-danger">{{ exam.type }}</h4>
-        <p>{{ exam.name }}</p>
-        <small>{{ exam.time }}</small>
-      </div>
-      <!-- 竞赛 -->
-      <div v-for="competition in competitions" :key="competition.id" class="card competition">
-        <h4 class="title text-success">{{ competition.type }}</h4>
-        <p>{{ competition.name }}</p>
-        <small>{{ competition.time }}</small>
-      </div>
-    </div>
-
-    <!-- 报名竞赛 -->
-    <div class="section">
-      <button class="btn btn-secondary">报名竞赛考试</button>
-    </div>
   </div>
 
+</template>
   
-  </template>
-  
-  <script>
+<script>
   export default {
     name: 'HomePage',
-    data() {
+    props: ['uid'],  // 接收从外部传入的 uid
+  data() {
     return {
-      // 示例数据
-      courses: [
-         { id: 1, name: "高级语言程序设计", status: "未加入" },
-        { id: 2, name: "数据结构", status: "已加入" },
-        { id: 3, name: "操作系统", status: "未加入" },
-        { id: 4, name: "计算机网络", status: "已加入" },
-        { id: 5, name: "编译原理", status: "未加入" }
-      ],
-      exams: [
-        { id: 1, type: "考试", name: "高级语言程序设计2-2上机考试", time: "2023/6/8 17:14:59" },
-        { id: 2, type: "考试", name: "高级语言程序设计2-1上机考试", time: "2023/2/25 21:49:59" }
-      ],
-      competitions: [
-        { id: 1, type: "竞赛", name: "NKPC19-现场赛", time: "2023/4/22 16:59:59" },
-        { id: 2, type: "竞赛", name: "NKPC19-网络赛", time: "2023/4/19 18:59:59" }
-      ]
+      courses: [] // 课程数据
     };
   },
   created() {
-    this.fetchData();
+    this.fetchCourses(); // 页面加载时获取课程数据
   },
   methods: {
-    // 模拟获取动态数据
-    async fetchData() {
+   // 从后端获取课程数据
+   async fetchCourses() {
       try {
-        // 使用 fetch 从 API 获取数据
-        const response = await fetch('/api/data');
+        const response = await fetch(`http://localhost:3000/api/courses?uid=${this.uid}`);
+        console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",this.uid);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-
-        // 更新数据
-        this.courses = data.courses || [];
-        this.exams = data.exams || [];
-        this.competitions = data.competitions || [];
+        console.log("data出来了没！！！！",data);
+        this.courses = data || []; // 更新课程数据
+        console.log("hahahhahahahhahaha",this.courses)
       } catch (error) {
-        console.error('获取数据失败:', error);
+        console.error('获取课程数据失败:', error);
       }
     },
     mounted() {
@@ -91,7 +56,7 @@
 
     }
   };
-  </script>
+</script>
   
   <style scoped>
 .container {
@@ -107,7 +72,7 @@
 
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 两列布局！！！！！！！！！ */
+  grid-template-columns: repeat(2, 1fr); /* 两列布局 */
   gap: 20px; /* 每个卡片之间的间距 */
 }
 
@@ -118,7 +83,13 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 .card .title {
-  font-weight: bold;
+  font-size: 1.1em; /* 增大字体大小 */
+  font-weight: bold; /* 加粗字体 */
+  margin-bottom: 10px; /* 增加与描述之间的间距 */
+}
+.card .description {
+  font-size: 0.8em; /* 减小字体大小 */
+  color: #7e7e7e; /* 设置较浅的颜色 */
 }
 .btn {
   padding: 10px 15px;
@@ -131,7 +102,7 @@
   border: none;
 }
 .btn-secondary {
-  background-color: #6c757d;
+  background-color: #979da3;
   color: white;
   border: none;
 }

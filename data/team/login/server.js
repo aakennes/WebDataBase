@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, "public")));
 const db = mysql.createConnection({
     host: "localhost", 			// 数据库主机
     user: "root", 				// 数据库用户名
-    password: "114514", 		// 替换为你的 MySQL 密码
+    password: "pwd", 		// 替换为你的 MySQL 密码
     database: "Web_Database", 	// 数据库名称
 });
 

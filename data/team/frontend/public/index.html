@@ -8,7 +8,7 @@
         <meta name="author" content="">
         <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
     
-        <title>课程</title>
+        <title>课程主页</title>
     
     
         <!-- Additional CSS Files -->
@@ -23,21 +23,14 @@
         <link rel="stylesheet" href="assets/css/lightbox.css">
 
         <link rel="stylesheet" type="text/css" href="assets/css/styleme.css">
-    <!--
-    
-    TemplateMo 571 Hexashop
-    
-    https://templatemo.com/tm-571-hexashop
-    
-    -->
+
         </head>
 
 
   <body>
     <noscript>
-      <strong>66666666666666666666666666666666We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
     </noscript>
-    <!-- <title>出来了出来了</title> -->
 
      <!-- ***** Preloader Start ***** -->
     <div id="preloader">
@@ -96,6 +89,12 @@
                             </a>
                             </li>
                         <!-- ***** Avatar End ***** -->
+
+                            <!-- ***** UID Display Start ***** -->
+                        <li class="uid-display">
+                            <span id="current-uid"></span>
+                        </li>
+                        <!-- ***** UID Display End ***** -->
 
                       </ul>        
                       <a class='menu-trigger'>
@@ -278,6 +277,31 @@
         }
     });
 
+        // 获取 URL 参数中的 uid
+        const urlParams = new URLSearchParams(window.location.search);
+        const uid = urlParams.get('uid');
+        if(uid){
+            window.uid = uid;
+        }
+        else{
+            window.uid = 12;
+        }
+
+        console.log("uid?????????????????:", window.uid);
+
+        // 根据 uid 获取用户名并显示
+        if (uid) {
+                fetch(`/api/username?uid=${uid}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var usernameElement = document.getElementById("username");
+                        if (usernameElement) {
+                            usernameElement.textContent = "欢迎, " + data.username;
+                        }
+                    });
+            }
+
+
 </script>
   
 <div id="app"></div>
@@ -286,7 +310,6 @@
 <script type="module" src="index.js"></script>
     <!-- built files will be auto injected -->
 
-    <h1>最后出来了出来了</h1>
   </body>
 </html>
 
