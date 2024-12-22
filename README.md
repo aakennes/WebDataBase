@@ -40,9 +40,12 @@ node v22.12.0
 ```
 
 
-登录界面使用node.js搭建, 在team文件夹中使用以下指令初始化并运行(需要保证5000端口未被占用):
+在team文件夹中使用以下指令初始化并运行:
 
 ```bash
+cd frontend
+npm install
+cd ../login
 npm install
 npm start
 ```
