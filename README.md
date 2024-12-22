@@ -28,6 +28,8 @@ user   -> 个人
 ```
 npm 10.7.0+
 mysql 5.7+
+@vue/cli 5.0.8
+node v22.12.0
 ```
 
 
