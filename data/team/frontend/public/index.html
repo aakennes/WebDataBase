@@ -1,26 +1,36 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <head>
 
-    <title>Hexashop Ecommerce HTML CSS Template</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    
+        <title>课程</title>
+    
+    
+        <!-- Additional CSS Files -->
+        <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
+    
+        <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css">
+    
+        <link rel="stylesheet" href="assets/css/templatemo-hexashop.css">
+    
+        <link rel="stylesheet" href="assets/css/owl-carousel.css">
+    
+        <link rel="stylesheet" href="assets/css/lightbox.css">
 
-
-    <!-- Additional CSS Files -->
-    <link rel="stylesheet" type="text/css" href="assets/css/bootstrap.min.css">
-
-    <link rel="stylesheet" type="text/css" href="assets/css/font-awesome.css">
-
-    <link rel="stylesheet" href="assets/css/templatemo-hexashop.css">
-
-    <link rel="stylesheet" href="assets/css/owl-carousel.css">
-
-    <link rel="stylesheet" href="assets/css/lightbox.css">
-  </head>
+        <link rel="stylesheet" type="text/css" href="assets/css/styleme.css">
+    <!--
+    
+    TemplateMo 571 Hexashop
+    
+    https://templatemo.com/tm-571-hexashop
+    
+    -->
+        </head>
 
 
   <body>
@@ -38,6 +48,8 @@
       </div>
   </div>  
   <!-- ***** Preloader End ***** -->
+
+
   
   
   <!-- ***** Header Area Start ***** -->
@@ -47,8 +59,8 @@
               <div class="col-12">
                   <nav class="main-nav">
                       <!-- ***** Logo Start ***** -->
-                      <a href="index.html" class="logo">
-                          <img src="assets/images/logo.png">
+                      <a href="index.html" class="logo" style="display: block; width: 150px;">
+                          <img src="assets/images/NKUOJ.png" style="width: 100%;">
                       </a>
                       <!-- ***** Logo End ***** -->
                       <!-- ***** Menu Start ***** -->
@@ -76,6 +88,15 @@
                               </ul>
                           </li>
                           <li class="scroll-to-section"><a href="#explore">Explore</a></li>
+
+                           <!-- ***** Avatar Start ***** -->
+                            <li class="avatar">
+                            <a href="index.html">
+                                <img src="assets/images/header_test.png" alt="Avatar" class="avatar-img" id="user-avatar">
+                            </a>
+                            </li>
+                        <!-- ***** Avatar End ***** -->
+
                       </ul>        
                       <a class='menu-trigger'>
                           <span>Menu</span>
@@ -88,8 +109,14 @@
   </header>
   <!-- ***** Header Area End ***** -->
 
+  
+    <h1>mainbanner前出来了出来了</h1>
+
+    <!-- 手画的纯静态页面 -->
+      
+
   <!-- ***** Main Banner Area Start ***** -->
-  <div class="main-banner" id="top">
+  <!-- <div class="main-banner" id="top">
       <div class="container-fluid">
           <div class="row">
               <div class="col-lg-6">
@@ -194,9 +221,11 @@
               </div>
           </div>
       </div>
-  </div>
+  </div> -->
   <!-- ***** Main Banner Area End ***** -->
 
+
+ 
 
   <!-- jQuery -->
   <script src="assets/js/jquery-2.1.0.min.js"></script>
@@ -237,10 +266,27 @@
         });
     });
 
+
+    // 假设这是用户登录时获取的头像 URL
+    var userAvatarUrl = "assets/images/header_test.png";
+
+    // 在页面加载时动态设置头像图片
+    document.addEventListener("DOMContentLoaded", function() {
+        var avatarImg = document.getElementById("user-avatar");
+        if (avatarImg) {
+            avatarImg.src = userAvatarUrl;
+        }
+    });
+
 </script>
   
-    
+<div id="app"></div>
+
+<!-- 引入编译后的 Vue 应用 -->
+<script type="module" src="index.js"></script>
     <!-- built files will be auto injected -->
+
+    <h1>最后出来了出来了</h1>
   </body>
 </html>
 

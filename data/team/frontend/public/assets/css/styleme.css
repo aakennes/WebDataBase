@@ -1,0 +1,46 @@
+/* 设置头像容器的样式 */
+.avatar {
+    margin-left: auto; /* 将头像推到最右边 */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+/* 设置头像图片的样式 */
+.avatar-img {
+    width: 45px; /* 设置头像的宽度 */
+    height: 45px; /* 设置头像的高度 */
+    border-radius: 50%; /* 将头像裁剪为圆形 */
+    object-fit: cover; /* 确保图片按比例填充 */
+    border: 2px solid #fff; /* 添加白色边框 */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2); /* 添加阴影 */
+}
+
+
+/* 首页正文部分 */
+.section-title {
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  .my-courses {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .card {
+    border-radius: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+  }
+  
+  .card-body button {
+    font-size: 1rem;
+    padding: 10px 20px;
+  }
+  
