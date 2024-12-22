@@ -113,7 +113,6 @@
                                     <h3><?= $submitAllCount ?></h3>
                                     <p>总提交数</p>
                                 </div>
-                                <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
                         </div>
                         <div class="col-lg-3 col-6">
@@ -122,7 +121,6 @@
                                     <h3><?= $accuracy ?><sup class="fs-5">%</sup></h3>
                                     <p>正确率</p>
                                 </div>
-                                <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
                         </div>
                         <div class="col-lg-3 col-6">
@@ -131,7 +129,6 @@
                                     <h3><?= $passstu ?></h3>
                                     <p>通过人数</p>
                                 </div>
-                                <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
                         </div>
                         <div class="col-lg-3 col-6">
@@ -140,7 +137,6 @@
                                     <h3><?= $allsubmit ?></h3>
                                     <p>总提交人数</p>
                                 </div>
-                                <a href="#" class="small-box-footer">More info <i class="bi bi-link-45deg"></i></a>
                             </div>
                         </div>
                     </div>
