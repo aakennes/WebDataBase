@@ -80,6 +80,22 @@ app.post("/api/check-email", (req, res) => {
     });
 });
 
+const os = require('os');
+const { exec } = require("child_process");
+
+// 获取本机真实 IP 地址
+function getLocalIPAddress() {
+    const interfaces = os.networkInterfaces();
+    for (const iface of Object.values(interfaces)) {
+        for (const config of iface) {
+            if (config.family === 'IPv4' && !config.internal) {
+                return config.address; // 返回非内网地址
+            }
+        }
+    }
+    return 'localhost'; // 找不到真实地址时使用 localhost
+}
+
 app.post("/api/login", (req, res) => {
     const { email, isBackend } = req.body;
 
@@ -87,23 +103,72 @@ app.post("/api/login", (req, res) => {
         return res.status(400).json({ success: false, message: "Email is required" });
     }
 
-    const query = "SELECT COUNT(*) AS count FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
+    const query = "SELECT COUNT(*) AS count, uid FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
     db.query(query, [email], (err, results) => {
         if (err) {
             console.error("数据库查询错误:", err);
             return res.status(500).json({ success: false, message: "Internal Server Error" });
         }
 
-        const count = results[0].count;
-        if (count > 0) {
-            // 登录成功，根据是否勾选“进入后台”返回不同的跳转 URL
-            const redirectUrl = isBackend ? "http://localhost:8081/backend" : "http://localhost:8080/frontend";
-            res.json({ success: true, redirectUrl });
+        if (results.length > 0) {
+            const uid = results[0].uid; // 获取 UID
+            const ipAddress = getLocalIPAddress();
+            console.log(`获取到的 IP 地址: ${ipAddress}`);
+
+            if (isBackend) {
+                // 动态启动后台服务
+                exec("cd ../backend && php yii serve --port=8082", (err, stdout, stderr) => {
+                    if (err) {
+                        console.error(`启动后台服务失败: ${stderr}`);
+                        return res.status(500).json({ success: false, message: "启动后台失败" });
+                    }
+
+                    console.log(`后台服务启动成功: ${stdout}`);
+                    res.json({ success: true, redirectUrl: `http://${ipAddress}:8082/backend?uid=${uid}` });
+                });
+            } else {
+                // 动态启动前台服务
+                const frontendCommand = exec("cd ../frontend && npm run serve");
+
+                let frontendPort = null;
+
+                // 捕获服务输出日志
+                frontendCommand.stdout.on("data", (data) => {
+                    console.log(`前台服务输出: ${data}`);
+                    const portMatch = data.match(/Local:.*http:\/\/.*:(\d+)/); // 修改正则
+                    if (portMatch && !frontendPort) {
+                        frontendPort = portMatch[1];
+                        console.log(`前台服务启动成功，端口: ${frontendPort}`);
+
+                        // 返回给前端
+                        res.json({
+                            success: true,
+                            redirectUrl: `http://${ipAddress}:${frontendPort}?uid=${uid}`,
+                        });
+                    }
+                });
+
+                // 捕获服务启动错误
+                frontendCommand.stderr.on("data", (data) => {
+                    console.error(`前台服务启动失败: ${data}`);
+                });
+
+                // 监听服务关闭事件
+                frontendCommand.on("close", (code) => {
+                    if (!frontendPort) {
+                        console.error("无法启动前台服务，未获取端口信息");
+                        res.status(500).json({ success: false, message: "启动前台失败" });
+                    }
+                });
+            }
         } else {
+            // 学号不存在
             res.status(401).json({ success: false, message: "学号不存在" });
         }
     });
 });
+
+
 
 // 当访问根路径时重定向到 login.html
 app.get("/", (req, res) => {

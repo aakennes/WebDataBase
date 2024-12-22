@@ -1,25 +1,32 @@
 # WebDataBase
 
 course -> 团队
+
 user   -> 个人
 
 登录界面 : node.js
+
 前台界面 : Vue.js(https://vuejs.org/api/)
+
 后台界面 : Yii
 
 登录端口 : 5000
+
 前台界面 : 8080
+
 后台界面 : 8081
 
 如果以上端口被占用，需要清理以上端口
 
 ## 文件结构
-
+```
 --team-- login	--
 	|		
 	----frontend--
 	|
 	----backend	--
+```
+
  
 ## 环境要求
 
@@ -39,8 +46,6 @@ node v22.12.0
 npm install
 npm start
 ```
-
-
 
 ## 数据表说明
 
