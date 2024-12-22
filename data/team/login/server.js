@@ -113,18 +113,18 @@ app.post("/api/login", (req, res) => {
         if (results.length > 0) {
             const uid = results[0].uid; // 获取 UID
             const ipAddress = getLocalIPAddress();
-            console.log(`获取到的 IP 地址: ${ipAddress}`);
-
+            
             if (isBackend) {
+				// console.log(`获取到的 IP 地址: ${ipAddress}`);
                 // 动态启动后台服务
-                exec("cd ../backend && php yii serve --port=8082", (err, stdout, stderr) => {
+                exec("cd ../backend && php yii serve", (err, stdout, stderr) => {
                     if (err) {
                         console.error(`启动后台服务失败: ${stderr}`);
                         return res.status(500).json({ success: false, message: "启动后台失败" });
                     }
 
                     console.log(`后台服务启动成功: ${stdout}`);
-                    res.json({ success: true, redirectUrl: `http://${ipAddress}:8082/backend?uid=${uid}` });
+                    res.json({ success: true, redirectUrl: `http://localhost:8080/backend?uid=${uid}` });
                 });
             } else {
                 // 动态启动前台服务
