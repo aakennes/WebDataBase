@@ -249,7 +249,7 @@
   <script src="assets/js/custom.js"></script>
 
 
-  <script>
+<script>
 
     $(function() {
         var selectedClass = "";
@@ -286,29 +286,22 @@
         else{
             window.uid = 12;
         }
+        console.log("urlParams??????????:", urlParams);
 
         console.log("uid?????????????????:", window.uid);
-
-        // 根据 uid 获取用户名并显示
-        if (uid) {
-                fetch(`/api/username?uid=${uid}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        var usernameElement = document.getElementById("username");
-                        if (usernameElement) {
-                            usernameElement.textContent = "欢迎, " + data.username;
-                        }
-                    });
-            }
 
 
 </script>
   
-<div id="app"></div>
 
-<!-- 引入编译后的 Vue 应用 -->
-<script type="module" src="index.js"></script>
+
+    
     <!-- built files will be auto injected -->
+    <!-- 自动挂载 -->
+    <div id="app"></div>
+
+
+
 
   </body>
 </html>

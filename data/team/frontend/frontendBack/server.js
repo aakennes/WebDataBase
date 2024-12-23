@@ -13,7 +13,7 @@ app.use(express.json()); // 解析 JSON 数据
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '*klsdyn*3C',
+    password: 'pwd',
     database: 'Web_Database'
   });
 
@@ -49,6 +49,8 @@ app.get('/api/courses', (req, res) => {
       if (err) {
         return res.status(500).send('Database query failed');
       }
+
+    console.log("根据 uid 获取用户课程数据", results);
   
       if (results.length > 0) {
         res.json(results);  // 返回查询结果
@@ -58,51 +60,47 @@ app.get('/api/courses', (req, res) => {
     });
   });
 
-// // API 路由：获取数据
-// app.get('/api/data', (req, res) => {
-//   res.json(data); // 返回 JSON 数据
-// });
 
-
-// 根路由：返回包含当前数据的 HTML 页面
-app.get('/', (req, res) => {
-    // 查询数据库获取所有课程数据
-    const query = `
-    SELECT 
-        c.cid AS id,
-        c.title AS name,
-        c.description,
-        c.owner_id,
-        c.passcode,
-        c.number
-    FROM 
-        course c
-    `;
+// // 根路由：测试数据库连接
+// app.get('/', (req, res) => {
+//     // 查询数据库获取所有课程数据
+//     const query = `
+//     SELECT 
+//         c.cid AS id,
+//         c.title AS name,
+//         c.description,
+//         c.owner_id,
+//         c.passcode,
+//         c.number
+//     FROM 
+//         course c
+//     `;
     
-    db.execute(query, (err, results) => {
-      if (err) {
-        return res.status(500).send('Database query failed');
-      }
+//     db.execute(query, (err, results) => {
+//       if (err) {
+//         return res.status(500).send('Database query failed');
+//       }
   
-      let html = `
-        <html>
-          <head>
-            <title>当前数据</title>
-            <style>
-              body { font-family: Arial, sans-serif; margin: 20px; }
-              h1 { color: #333; }
-              pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
-            </style>
-          </head>
-          <body>
-            <h1>当前数据</h1>
-            <pre>${JSON.stringify(results, null, 2)}</pre>
-          </body>
-        </html>
-      `;
-      res.send(html);
-    });
-});
+  
+//       let html = `
+//         <html>
+//           <head>
+//             <title>当前数据</title>
+//             <style>
+//               body { font-family: Arial, sans-serif; margin: 20px; }
+//               h1 { color: #333; }
+//               pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
+//             </style>
+//           </head>
+//           <body>
+//             <h1>当前数据</h1>
+//             <pre>${JSON.stringify(results, null, 2)}</pre>
+//           </body>
+//         </html>
+//       `;
+//       res.send(html);
+//     });
+// });
 
 
   
@@ -137,6 +135,8 @@ app.get('/api/courseInfo', (req, res) => {
           console.error('数据库查询失败:', err);
           return res.status(500).send('数据库查询失败');
       }
+
+    console.log("获取课程详情",results);
 
       if (results.length > 0) {
           res.json(results[0]); // 返回查询结果的第一个课程（因为 cid 是唯一的）
