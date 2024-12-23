@@ -142,10 +142,10 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-lg-7 connectedSortable">
+                        <div class="col-lg-12 connectedSortable">
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <h3 class="card-title">Sales Value</h3>
+                                    <h3 class="card-title">上一题完成情况</h3>
                                 </div>
                                 <div class="card-body">
                                     <div id="revenue-chart"></div>
@@ -153,19 +153,124 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-5 connectedSortable">
-                            <div class="card text-white bg-primary bg-gradient border-primary mb-4">
-                                <div class="card-header border-0">
-                                    <h3 class="card-title">Sales Value</h3>
+                        
+                    </div>
+                    <div class="col-lg-12 connectedSortable">
+                    <div class="card text-dark bg-light  custom-border mb-4">
+                        <div class="card-header border-0">
+                            <h3 class="card-title">删除操作</h3>
+                        </div>
+                        <div class="card-body">
+                            <!-- 删除操作 -->
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label for="delete-problem-id">删除习题（输入习题ID）</label>
+                                    <input type="number" class="form-control" id="delete-problem-id" placeholder="习题ID">
+                                    <button class="btn btn-danger mt-2" onclick="deleteProblem()">删除习题</button>
                                 </div>
-                                <div class="card-body">
-                                    <div id="world-map" style="height: 220px"></div>
+
+                                <div class="col-md-4">
+                                    <label for="delete-psid">删除习题集（输入习题集ID）</label>
+                                    <input type="number" class="form-control" id="delete-psid" placeholder="习题集ID">
+                                    <button class="btn btn-danger mt-2" onclick="deleteProblemSet()">删除习题集</button>
                                 </div>
+
+                                <div class="col-md-4">
+                                    <label for="delete-cid">删除课程（输入课程ID）</label>
+                                    <input type="number" class="form-control" id="delete-cid" placeholder="课程ID">
+                                    <button class="btn btn-danger mt-2" onclick="deleteCourse()">删除课程</button>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <!-- 新增操作，明显分隔 -->
+                            <div class="form-group">
+                                <h4 class="card-title">新增习题</h4>
+                                <label for="add-psid">习题集ID (psid)</label>
+                                <input type="number" class="form-control" id="add-psid" placeholder="输入习题集ID">
+
+                                <label for="add-title">习题标题</label>
+                                <input type="text" class="form-control" id="add-title" placeholder="输入习题标题">
+
+                                <label for="add-submit_ac">已通过提交次数</label>
+                                <input type="number" class="form-control" id="add-submit_ac" placeholder="输入已通过提交次数">
+
+                                <label for="add-submit_all">总提交次数</label>
+                                <input type="number" class="form-control" id="add-submit_all" placeholder="输入总提交次数">
+
+                                <label for="add-cases">测试案例数</label>
+                                <input type="number" class="form-control" id="add-cases" placeholder="输入测试案例数">
+
+                                <label for="add-time_limit">时间限制</label>
+                                <input type="number" class="form-control" id="add-time_limit" placeholder="输入时间限制">
+
+                                <label for="add-memory_limit">内存限制</label>
+                                <input type="number" class="form-control" id="add-memory_limit" placeholder="输入内存限制">
+
+                                <label for="add-owner_id">拥有者ID</label>
+                                <input type="number" class="form-control" id="add-owner_id" placeholder="输入拥有者ID">
+                                <div class="justify-content-end">
+                                <button class="btn btn-success mt-2 " onclick="addProblem()">新增习题</button>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <h4 class="card-title">新增习题集</h4>
+                                <label for="add-psid-set">习题集ID (psid)</label>
+                                <input type="number" class="form-control" id="add-psid-set" placeholder="输入习题集ID">
+
+                                <label for="add-title-set">习题集标题</label>
+                                <input type="text" class="form-control" id="add-title-set" placeholder="输入习题集标题">
+
+                                <label for="add-description">描述</label>
+                                <input type="text" class="form-control" id="add-description" placeholder="输入描述">
+
+                                <label for="add-during">时长</label>
+                                <input type="number" class="form-control" id="add-during" placeholder="输入时长">
+
+                                <label for="add-cid-set">课程ID</label>
+                                <input type="number" class="form-control" id="add-cid-set" placeholder="输入课程ID">
+
+                                <label for="add-owner-id-set">拥有者ID</label>
+                                <input type="number" class="form-control" id="add-owner-id-set" placeholder="输入拥有者ID">
+
+                                <button class="btn btn-success mt-2" onclick="addProblemSet()">新增习题集</button>
+                            </div>
+
+                            <hr>
+
+                            <div class="form-group">
+                                <h4 class="card-title">新增课程</h4>
+                                <label for="add-cid-course">课程ID (cid)</label>
+                                <input type="number" class="form-control" id="add-cid-course" placeholder="输入课程ID">
+
+                                <label for="add-title-course">课程标题</label>
+                                <input type="text" class="form-control" id="add-title-course" placeholder="输入课程标题">
+
+                                <label for="add-description-course">课程描述</label>
+                                <input type="text" class="form-control" id="add-description-course" placeholder="输入课程描述">
+
+                                <label for="add-passcode">课程密码</label>
+                                <input type="text" class="form-control" id="add-passcode" placeholder="输入课程密码">
+
+                                <label for="add-number">课程号</label>
+                                <input type="text" class="form-control" id="add-number" placeholder="输入课程号">
+
+                                <label for="add-owner-id-course">拥有者ID</label>
+                                <input type="number" class="form-control" id="add-owner-id-course" placeholder="输入拥有者ID">
+
+                                <button class="btn btn-success mt-2" onclick="addCourse()">新增课程</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                
             </div>
+        </div>
+            
         </main>
     </div>
 
