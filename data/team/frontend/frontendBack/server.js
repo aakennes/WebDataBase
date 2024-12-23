@@ -224,6 +224,151 @@ app.get('/api/problem', (req, res) => {
   });
 });
 
+ // API 路由：根据 uid 获取个人信息
+ app.get('/api/user-info', (req, res) => {
+  // console.log("req.query : " + req.query);
+  const { uid } = req.query; // 从 URL 参数中获取 psid
+
+  // 确保提供了 uid 参数
+  if (!uid) {
+      return res.status(400).send('uid 参数是必须的');
+  }
+
+  // 查询数据库获取与 psid 相关的习题信息
+  const query = `
+      SELECT 
+          nickname,
+          color,
+          email,
+          acnum,
+          allnum
+      FROM 
+          user
+      WHERE 
+          uid = ?
+  `;
+
+  db.execute(query, [uid], (err, results) => {
+      if (err) {
+          console.error('查询数据库失败:', err);
+          return res.status(500).send('数据库查询失败');
+      }
+
+      // 如果查询到结果，返回结果；否则返回 404
+      if (results.length > 0) {
+          // console.log("查询结果:", JSON.stringify(results, null, 2));
+          res.json(results[0]);
+      } else {
+          res.status(404).send('未找到对应的个人');
+      }
+  });
+});
+
+app.get('/api/user-info-solutions', (req, res) => {
+  // console.log("req.query : " + req.query);
+  const { uid } = req.query; // 从 URL 参数中获取 psid
+
+  // 确保提供了 uid 参数
+  if (!uid) {
+      return res.status(400).send('uid 参数是必须的');
+  }
+
+  // 查询数据库获取与 psid 相关的习题信息
+  const query = `
+    SELECT 
+        s.sid AS id,
+        s.pid AS problemId,
+        s.uid AS uid,
+        u.nickname AS username,
+        p.title AS title,
+        s.score AS score
+    FROM 
+        solution s
+    JOIN 
+        user u ON s.uid = u.uid
+    JOIN 
+        problem p ON s.pid = p.pid
+    WHERE 
+        s.uid = ?
+    ORDER BY 
+        s.sid DESC
+    LIMIT 7
+  `;
+
+
+  db.execute(query, [uid], (err, results) => {
+      if (err) {
+          console.error('查询数据库失败:', err);
+          return res.status(500).send('数据库查询失败');
+      }
+
+      // 如果查询到结果，返回结果；否则返回 404
+      if (results.length > 0) {
+          res.json(results);
+      } else {
+          res.status(404).send('未找到对应的个人');
+      }
+  });
+});
+
+app.get("/api/messages", (req, res) => {
+  const { uid } = req.query;
+
+  if (!uid) {
+    return res.status(400).send("uid 参数是必须的");
+  }
+
+  const query = `
+    SELECT 
+      m.umid, 
+      m.from_uid, 
+      m.to_uid, 
+      m.text, 
+      u.nickname, 
+      u.color 
+    FROM 
+      user_message m
+    JOIN 
+      user u 
+    ON 
+      m.from_uid = u.uid
+    WHERE 
+      m.to_uid = ? 
+    ORDER BY 
+      m.umid DESC
+  `;
+
+
+  db.execute(query, [uid], (err, results) => {
+    if (err) {
+      console.error("查询留言失败:", err);
+      return res.status(500).send("数据库查询失败");
+    }
+    res.json(results);
+  });
+});
+
+// 提交新留言
+app.post("/api/messages", (req, res) => {
+  const { from_uid, to_uid, text } = req.body;
+
+  if (!from_uid || !to_uid || !text) {
+    return res.status(400).send("from_uid, to_uid 和 text 参数是必须的");
+  }
+
+  const query = `
+    INSERT INTO user_message (from_uid, to_uid, text) 
+    VALUES (?, ?, ?)
+  `;
+
+  db.execute(query, [from_uid, to_uid, text], (err) => {
+    if (err) {
+      console.error("插入留言失败:", err);
+      return res.status(500).send("数据库插入失败");
+    }
+    res.json({ success: true, message: "留言提交成功" });
+  });
+});
 
 // 启动服务器
 app.listen(port, () => {

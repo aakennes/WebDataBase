@@ -23,8 +23,8 @@ module.exports = defineConfig({
       title: 'Problem Page', // 页面标题
     },
     profile: {
-      entry: 'src/main/profile.js', // 问题集入口文件
-      template: 'public/profile.html', // 问题集 HTML 模板
+      entry: 'src/main/profile.js', // 个人信息入口文件
+      template: 'public/profile.html', // 个人信息 HTML 模板
       filename: 'profile.html', // 输出的 HTML 文件名
       title: 'Profile Page', // 页面标题
     },
