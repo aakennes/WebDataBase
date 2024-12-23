@@ -144,32 +144,56 @@ app.post("/api/login", (req, res) => {
                     }
                 });
             } else {
-                const frontendbackCommand = exec("cd ../frontend/frontendBack && node server.js");
-                const frontendCommand = exec("cd ../frontend && npm run serve");
-                let frontendPort = null;
-                frontendCommand.stdout.on("data", (data) => {
-                    console.log(`前台服务输出: ${data}`);
-                    const portMatch = data.match(/Local:.*http:\/\/.*:(\d+)/); // 修改正则
-                    if (portMatch && !frontendPort) {
-                        frontendPort = portMatch[1];
-                        // console.log(`前台服务启动成功，端口: ${frontendPort}`);
-                        res.json({
-                            success: true,
-                            redirectUrl: `http://localhost:${frontendPort}?uid=${uid}`,
-                        });
-                    }
+                const { spawn } = require("child_process");
+
+                const frontendbackCommand = spawn("node", ["server.js"], {
+                    cwd: "../frontend/frontendBack",
                 });
-                // 捕获服务启动错误
+                const frontendCommand = spawn("npm", ["run", "serve"], {
+                    cwd: "../frontend",
+                });
+
+                let frontendPort = null;
+
+                frontendCommand.stdout.on("data", (data) => {
+                const output = data.toString();
+                console.log(`前台服务输出: ${output}`);
+
+                const portMatch = output.match(/http:\/\/localhost:(\d+)/);
+
+                if (portMatch && !frontendPort) {
+                    frontendPort = portMatch[1];
+                    console.log(`前台服务启动成功，端口: ${frontendPort}`);
+                    res.json({
+                    success: true,
+                    redirectUrl: `http://localhost:${frontendPort}?uid=${uid}`,
+                    });
+                }
+                });
+
                 frontendCommand.stderr.on("data", (data) => {
                     console.error(`前台服务启动失败: ${data}`);
                 });
-                // 监听服务关闭事件
+
                 frontendCommand.on("close", (code) => {
-                    if (!frontendPort) {
-                        console.error("无法启动前台服务，未获取端口信息");
-                        res.status(500).json({ success: false, message: "启动前台失败" });
-                    }
+                if (!frontendPort) {
+                    console.error("无法启动前台服务，未获取端口信息");
+                    res.status(500).json({ success: false, message: "启动前台失败" });
+                }
                 });
+
+                frontendbackCommand.stdout.on("data", (data) => {
+                    console.log(`后台服务输出: ${data}`);
+                });
+
+                frontendbackCommand.stderr.on("data", (data) => {
+                    console.error(`后台服务启动失败: ${data}`);
+                });
+
+                frontendbackCommand.on("close", (code) => {
+                    console.error(`后台服务进程退出，退出码: ${code}`);
+                });
+
             }
         } else {
             // 学号不存在
