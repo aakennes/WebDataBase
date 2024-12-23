@@ -2,103 +2,177 @@
 
 namespace app\models;
 
-class User extends \yii\base\BaseObject implements \yii\web\IdentityInterface
+use Yii;
+
+/**
+ * This is the model class for table "user".
+ *
+ * @property int $uid
+ * @property string $nickname
+ * @property string $email
+ * @property string $color
+ * @property int $acnum
+ * @property int $allnum
+ *
+ * @property CourseUser[] $courseUsers
+ * @property Course[] $cs
+ * @property ProblemMaintainer[] $problemMaintainers
+ * @property Problem[] $problems
+ * @property ProblemsetMaintainer[] $problemsetMaintainers
+ * @property ProblemsetUser[] $problemsetUsers
+ * @property Problemset[] $problemsets
+ * @property Problem[] $ps
+ * @property Problemset[] $ps0
+ * @property Problemset[] $ps1
+ * @property Solution[] $solutions
+ */
+class User extends \yii\db\ActiveRecord
 {
-    public $id;
-    public $username;
-    public $password;
-    public $authKey;
-    public $accessToken;
-
-    private static $users = [
-        '100' => [
-            'id' => '100',
-            'username' => 'admin',
-            'password' => 'admin',
-            'authKey' => 'test100key',
-            'accessToken' => '100-token',
-        ],
-        '101' => [
-            'id' => '101',
-            'username' => 'demo',
-            'password' => 'demo',
-            'authKey' => 'test101key',
-            'accessToken' => '101-token',
-        ],
-    ];
-
-
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
+    public static function tableName()
     {
-        return isset(self::$users[$id]) ? new static(self::$users[$id]) : null;
+        return 'user';
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public function rules()
     {
-        foreach (self::$users as $user) {
-            if ($user['accessToken'] === $token) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return [
+            [['nickname', 'email'], 'required'],
+            [['color'], 'string'],
+            [['acnum', 'allnum'], 'integer'],
+            [['nickname'], 'string', 'max' => 100],
+            [['email'], 'string', 'max' => 255],
+            [['email'], 'unique'],
+        ];
     }
 
     /**
-     * Finds user by username
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'uid' => 'Uid',
+            'nickname' => 'Nickname',
+            'email' => 'Email',
+            'color' => 'Color',
+            'acnum' => 'Acnum',
+            'allnum' => 'Allnum',
+        ];
+    }
+
+    /**
+     * Gets query for [[CourseUsers]].
      *
-     * @param string $username
-     * @return static|null
+     * @return \yii\db\ActiveQuery
      */
-    public static function findByUsername($username)
+    public function getCourseUsers()
     {
-        foreach (self::$users as $user) {
-            if (strcasecmp($user['username'], $username) === 0) {
-                return new static($user);
-            }
-        }
-
-        return null;
+        return $this->hasMany(CourseUser::class, ['uid' => 'uid']);
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getAuthKey()
-    {
-        return $this->authKey;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAuthKey($authKey)
-    {
-        return $this->authKey === $authKey;
-    }
-
-    /**
-     * Validates password
+     * Gets query for [[Cs]].
      *
-     * @param string $password password to validate
-     * @return bool if password provided is valid for current user
+     * @return \yii\db\ActiveQuery
      */
-    public function validatePassword($password)
+    public function getCs()
     {
-        return $this->password === $password;
+        return $this->hasMany(Course::class, ['cid' => 'cid'])->viaTable('course_user', ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[ProblemMaintainers]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProblemMaintainers()
+    {
+        return $this->hasMany(ProblemMaintainer::class, ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[Problems]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProblems()
+    {
+        return $this->hasMany(Problem::class, ['owner_id' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[ProblemsetMaintainers]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProblemsetMaintainers()
+    {
+        return $this->hasMany(ProblemsetMaintainer::class, ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[ProblemsetUsers]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProblemsetUsers()
+    {
+        return $this->hasMany(ProblemsetUser::class, ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[Problemsets]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProblemsets()
+    {
+        return $this->hasMany(Problemset::class, ['owner_id' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[Ps]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPs()
+    {
+        return $this->hasMany(Problem::class, ['pid' => 'pid'])->viaTable('problem_maintainer', ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[Ps0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPs0()
+    {
+        return $this->hasMany(Problemset::class, ['psid' => 'psid'])->viaTable('problemset_maintainer', ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[Ps1]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPs1()
+    {
+        return $this->hasMany(Problemset::class, ['psid' => 'psid'])->viaTable('problemset_user', ['uid' => 'uid']);
+    }
+
+    /**
+     * Gets query for [[Solutions]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSolutions()
+    {
+        return $this->hasMany(Solution::class, ['uid' => 'uid']);
     }
 }

@@ -21,6 +21,7 @@ use app\models\Solution;
 use app\models\ProblemsetUser;
 use app\models\Problemset;
 use app\models\Course;
+use app\models\User;
 use app\models\CourseUser;
 use yii\helpers\ArrayHelper;
 class SiteController extends Controller
@@ -92,7 +93,10 @@ class SiteController extends Controller
 
         $uid = $sessionUid;
 
-
+        $username = User::find()
+            ->select(['nickname'])  // 选择 nickname 字段
+            ->where(['uid' => $uid]) // 根据 uid 查询
+            ->scalar(); // 返回单个字段值
 
         // 查询该用户创建的最新题目的 pid
         $latestProblem = ProblemMaintainer::find()
@@ -185,6 +189,7 @@ class SiteController extends Controller
             'dates' => $dates,
             'total_submissions' => $totalSubmissions,
             'passed_submissions' => $passedSubmissions,
+            'username' => $username,
         ]);
     }
 
@@ -213,6 +218,22 @@ class SiteController extends Controller
 
     public function actionIndex2()
     {   
+        // 从 session 中获取 uid
+        $sessionUid = Yii::$app->session->get('uid', null);
+        
+        // 如果 session 中没有 uid，则抛出异常
+        if ($sessionUid === null) {
+            throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
+        }
+        
+        $uid = $sessionUid;
+        
+        $username = User::find()
+            ->select(['nickname'])  // 选择 nickname 字段
+            ->where(['uid' => $uid]) // 根据 uid 查询
+            ->scalar(); // 返回单个字段值
+
+
         // 查询数据库获取所有习题集数据
         $problemSets = ProblemSet::find()->all(); 
         // 从 URL 中获取 psid 参数
@@ -347,6 +368,7 @@ class SiteController extends Controller
         ];
 
         return $this->render('index2', [
+            'username' => $username,
             'allstu' => $allstu,
             'totalSubmissions' => $totalSubmissions,
             'totalUsers' => $totalUsers,
@@ -366,6 +388,21 @@ class SiteController extends Controller
 
     public function actionIndex3()
     {   
+        // 从 session 中获取 uid
+        $sessionUid = Yii::$app->session->get('uid', null);
+        
+        // 如果 session 中没有 uid，则抛出异常
+        if ($sessionUid === null) {
+            throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
+        }
+                
+        $uid = $sessionUid;
+                
+        $username = User::find()
+            ->select(['nickname'])  // 选择 nickname 字段
+            ->where(['uid' => $uid]) // 根据 uid 查询
+            ->scalar(); // 返回单个字段值
+
         // 课程ID
         $courseIds = [12, 13, 14]; // 高级语言程序设计2-2 (12), Alg2024 (13), 密码学基础2024 (14)
 
@@ -486,6 +523,7 @@ class SiteController extends Controller
 
         // 将查询结果传递给视图
         return $this->render('index3', [
+            'username' => $username,
             'results' => $results,
             'submissionData' => $submissionData,
             'courseNames' => $courseNames,
