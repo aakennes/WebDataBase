@@ -74,8 +74,25 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        //$uid = Yii::$app->user->id;
-        $uid = 4; // 假设通过登录用户的 UID 获取
+        // 从 URL 中提取 uid
+        $uid = Yii::$app->request->get('uid', null);
+
+        // 如果 URL 中提供了 uid，保存到 session
+        if ($uid !== null) {
+            Yii::$app->session->set('uid', $uid);
+        }
+        
+        // 从 session 中获取 uid
+        $sessionUid = Yii::$app->session->get('uid', null);
+        
+        // 如果 session 中没有 uid，则抛出异常
+        if ($sessionUid === null) {
+            throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
+        }
+
+        $uid = $sessionUid;
+
+
 
         // 查询该用户创建的最新题目的 pid
         $latestProblem = ProblemMaintainer::find()
@@ -196,6 +213,7 @@ class SiteController extends Controller
 
     public function actionIndex2()
     {   
+        $uid = Yii::$app->session->get('uid', null);
         $psid = 81;
         $allstu = 0;
         $psid = 81;
@@ -298,6 +316,19 @@ class SiteController extends Controller
             ->where(['psid' => $psid])
             ->count();
 
+        //该习题集提交记录
+        $submissionData = Solution::find()
+            ->select([
+                'pid',          // 问题ID
+                'uid',          // 提交用户ID
+                'score',        // 得分
+                '`when`',   // 提交时间
+            ])
+            ->where(['pid' => $pids])
+            ->orderBy(['`when`' => SORT_DESC])  // 按提交时间降序排序
+            ->limit(10)  // 限制结果为前20条
+            ->all();
+
         return $this->render('index2', [
             'allstu' => $allstu,
             'totalSubmissions' => $totalSubmissions,
@@ -310,7 +341,7 @@ class SiteController extends Controller
             'totalLowScoreSubmissions' => $totalLowScoreSubmissions,
             'totaldone' => $totaldone,
             'pids_num' => $pids_num,
-        
+            'submissionData' => $submissionData,
         ]); // 渲染 views/site/index2.php
     }
 

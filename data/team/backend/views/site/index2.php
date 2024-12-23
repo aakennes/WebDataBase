@@ -3,6 +3,7 @@
 * Team: 
 * Coding by Cai Yuanhong 2213897; Huang Mingzhou 2211804; 20241221 
 */
+use yii\helpers\Html;
 ?>
 
 <!DOCTYPE html>
@@ -201,83 +202,40 @@
                             
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Latest Orders</h3>
+                                    <h3 class="card-title">该习题集最近提交记录</h3>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
                                 </div> <!-- /.card-header -->
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
-                                        <table class="table m-0">
+                                        <table class="table table-striped table-bordered table-hover text-center m-0">
                                             <thead>
                                                 <tr>
-                                                    <th>Order ID</th>
-                                                    <th>Item</th>
-                                                    <th>Status</th>
-                                                    <th>Popularity</th>
+                                                    <th>PID</th>
+                                                    <th>UID</th>
+                                                    <th>Score</th>
+                                                    <th>SubmissionTime</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR9842</a> </td>
-                                                    <td>Call of Duty IV</td>
-                                                    <td> <span class="badge text-bg-success">
-                                                            Shipped
-                                                        </span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-1"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR1848</a> </td>
-                                                    <td>Samsung Smart TV</td>
-                                                    <td> <span class="badge text-bg-warning">Pending</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-2"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a> </td>
-                                                    <td>iPhone 6 Plus</td>
-                                                    <td> <span class="badge text-bg-danger">
-                                                            Delivered
-                                                        </span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-3"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a> </td>
-                                                    <td>Samsung Smart TV</td>
-                                                    <td> <span class="badge text-bg-info">Processing</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-4"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR1848</a> </td>
-                                                    <td>Samsung Smart TV</td>
-                                                    <td> <span class="badge text-bg-warning">Pending</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-5"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a> </td>
-                                                    <td>iPhone 6 Plus</td>
-                                                    <td> <span class="badge text-bg-danger">
-                                                            Delivered
-                                                        </span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-6"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR9842</a> </td>
-                                                    <td>Call of Duty IV</td>
-                                                    <td> <span class="badge text-bg-success">Shipped</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-7"></div>
-                                                    </td>
-                                                </tr>
+                                                <?php foreach ($submissionData as $data): ?>
+                                                    <tr>
+                                                        <td> <?= Html::encode($data->pid) ?></td>
+                                                        <td> <?= Html::encode($data->uid) ?> </td>
+                                                        <td>
+                                                            <?php 
+                                                                $score = $data->score;
+                                                                if ($score == 100) {
+                                                                    echo "<span class='badge text-bg-success'>{$score}</span>";
+                                                                } elseif ($score >= 60 && $score < 100) {
+                                                                    echo "<span class='badge text-bg-warning'>{$score}</span>";
+                                                                } else {
+                                                                    echo "<span class='badge text-bg-danger'>{$score}</span>";
+                                                                }
+                                                            ?>
+                                                        </td>
+                                                        <td> <?= Yii::$app->formatter->asDatetime($data->when) ?> <!-- 提交时间 --> </td>
+                                                    </tr>                                                    
+                                                <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div> <!-- /.table-responsive -->
