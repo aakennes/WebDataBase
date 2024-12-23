@@ -91,7 +91,7 @@ app.post("/api/login", (req, res) => {
         return res.status(400).json({ success: false, message: "Email is required" });
     }
 
-    const query = "SELECT COUNT(*) AS count, uid FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
+    const query = "SELECT COUNT(*) AS count, uid, author FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
     db.query(query, [email], (err, results) => {
         if (err) {
             console.error("数据库查询错误:", err);
@@ -100,20 +100,12 @@ app.post("/api/login", (req, res) => {
 
         if (results.length > 0) {
             const uid = results[0].uid; // 获取 UID
+            const author = results[0].author;
             
             if (isBackend) {
-                // console.log("准备启动后台服务...");
-                // // const backendCommand = exec("cd ../backend && php yii serve --port=8081");
-
-                // exec("cd ../backend && php yii serve --port=8081", (err, stdout, stderr) => {
-                //     if (err) {
-                //         console.error(`启动后台服务失败: ${stderr}`);
-                //         return res.status(500).json({ success: false, message: "启动后台失败" });
-                //     }
-    
-                //     console.log(`后台服务启动成功: ${stdout}`);
-                //     res.json({ success: true, redirectUrl: `http://localhost:8081?uid=${uid}` });
-                // });
+                if (author !== 1) {
+                    return res.status(403).json({ success: false, message: "Author Error" });
+                }
                 const spawn = require('child_process').spawn;
                 console.log("准备启动后台服务...");
                 const backendCommand = spawn('php', ['yii', 'serve'], { cwd: '../backend' });
@@ -152,15 +144,11 @@ app.post("/api/login", (req, res) => {
                 const frontendCommand = spawn("npm", ["run", "serve"], {
                     cwd: "../frontend",
                 });
-
                 let frontendPort = null;
-
                 frontendCommand.stdout.on("data", (data) => {
                 const output = data.toString();
                 console.log(`前台服务输出: ${output}`);
-
                 const portMatch = output.match(/http:\/\/localhost:(\d+)/);
-
                 if (portMatch && !frontendPort) {
                     frontendPort = portMatch[1];
                     console.log(`前台服务启动成功，端口: ${frontendPort}`);
@@ -170,11 +158,9 @@ app.post("/api/login", (req, res) => {
                     });
                 }
                 });
-
                 frontendCommand.stderr.on("data", (data) => {
                     console.error(`前台服务启动失败: ${data}`);
                 });
-
                 frontendCommand.on("close", (code) => {
                 if (!frontendPort) {
                     console.error("无法启动前台服务，未获取端口信息");
