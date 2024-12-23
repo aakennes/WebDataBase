@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "ProfilePage",
   data() {
@@ -104,14 +105,46 @@ export default {
     // 提交留言
     submitMessage() {
       if (this.newMessage.trim()) {
-        const nickname = this.userInfo.nickname || "匿名"; // 使用用户昵称或默认值
-        const messageContent = `${nickname}:\n${this.newMessage.trim()}`; // 拼接昵称和留言内容，支持换行
+        const nickname = this.userInfo?.nickname || "匿名"; // 使用用户昵称或默认值
+        const messageContent = `${nickname}:
+            ${this.newMessage.trim()}`; // 拼接昵称和留言内容，支持换行
         this.messages.push(messageContent); // 添加到留言列表
         this.newMessage = ""; // 清空输入框
       } else {
         alert("留言不能为空！");
       }
     },
+    // 获取用户信息
+    async fetchUserInfo() {
+      try {
+        const response = await axios.get("http://localhost:3000/api/user-info", {
+          params: { uid: this.uid },
+        });
+        if (response.data) {
+          this.userInfo = response.data;
+        }
+      } catch (error) {
+        console.error("加载用户信息失败:", error);
+      }
+    },
+    // 获取最近提交记录
+    async fetchRecentSubmissions() {
+      try {
+        const response = await axios.get("http://localhost:3000/api/courses", {
+          params: { uid: this.uid },
+        });
+        if (response.data) {
+          this.recentSubmissions = response.data;
+        }
+      } catch (error) {
+        console.error("加载最近提交记录失败:", error);
+      }
+    },
+    
+  },
+  created() {
+    this.fetchUserInfo();
+    this.fetchRecentSubmissions();
   },
 };
 </script>

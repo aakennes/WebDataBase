@@ -58,6 +58,11 @@ app.get('/api/courses', (req, res) => {
     });
   });
 
+// // API 路由：获取数据
+// app.get('/api/data', (req, res) => {
+//   res.json(data); // 返回 JSON 数据
+// });
+
 
 // 根路由：返回包含当前数据的 HTML 页面
 app.get('/', (req, res) => {
