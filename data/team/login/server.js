@@ -2,8 +2,10 @@ const express = require("express");
 const path = require("path");
 const mysql = require("mysql2");
 const bodyParser = require("body-parser");
+const fs = require("fs");
 
 const app = express();
+app.use(express.json({ limit: "10mb" }));
 
 // 使用 body-parser 解析 JSON 请求
 app.use(bodyParser.json());
@@ -24,7 +26,6 @@ db.connect((err) => {
         console.log("已成功连接到数据库");
     }
 });
-
 app.post('/api/register', (req, res) => {
     const { email, nickname, color, acnum, allnum } = req.body;
 
@@ -91,7 +92,7 @@ app.post("/api/login", (req, res) => {
         return res.status(400).json({ success: false, message: "Email is required" });
     }
 
-    const query = "SELECT COUNT(*) AS count, uid, author FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
+    const query = "SELECT COUNT(*) AS count, uid, author, color, nickname FROM user WHERE email = CONCAT(?, '@mail.nankai.edu.cn')";
     db.query(query, [email], (err, results) => {
         if (err) {
             console.error("数据库查询错误:", err);
@@ -119,7 +120,10 @@ app.post("/api/login", (req, res) => {
                         // console.log(`捕获到后台服务启动端口: ${backendPort}`);
                         res.json({
                             success: true,
-                            redirectUrl: `http://localhost:${backendPort}?uid=${uid}`
+                            redirectUrl: `http://localhost:${backendPort}?uid=${uid}`,
+                            color: results[0].color,
+                            nickname: results[0].nickname,
+                            uid: results[0].uid
                         });
                     }
                 });
@@ -153,8 +157,11 @@ app.post("/api/login", (req, res) => {
                     frontendPort = portMatch[1];
                     console.log(`前台服务启动成功，端口: ${frontendPort}`);
                     res.json({
-                    success: true,
-                    redirectUrl: `http://localhost:${frontendPort}?uid=${uid}`,
+                        success: true,
+                        redirectUrl: `http://localhost:${frontendPort}?uid=${uid}`,
+                        color: results[0].color,
+                        nickname: results[0].nickname,
+                        uid: results[0].uid
                     });
                 }
                 });
@@ -188,7 +195,36 @@ app.post("/api/login", (req, res) => {
     });
 });
 
+app.post("/api/save-avatar", (req, res) => {
+    const { dataUrl, filePath } = req.body;
 
+    if (!dataUrl || !filePath) {
+        return res.status(400).json({ message: "缺少 dataUrl 或 filePath 参数" });
+    }
+
+    // 将 Base64 转换为二进制数据
+    const base64Data = dataUrl.replace(/^data:image\/\w+;base64,/, "");
+    const binaryData = Buffer.from(base64Data, "base64");
+
+    // 确保目录存在
+    const savePath = path.resolve(__dirname, filePath);
+    const dir = path.dirname(savePath);
+
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+    }
+
+    // 保存文件
+    fs.writeFile(savePath, binaryData, (err) => {
+        if (err) {
+            console.error("保存头像失败:", err);
+            return res.status(500).json({ message: "保存头像失败" });
+        }
+
+        console.log("头像已成功保存到:", savePath);
+        res.status(200).json({ message: "头像已成功保存" });
+    });
+});
 
 // 当访问根路径时重定向到 login.html
 app.get("/", (req, res) => {

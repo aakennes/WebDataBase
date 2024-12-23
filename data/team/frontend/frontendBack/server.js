@@ -50,7 +50,7 @@ app.get('/api/courses', (req, res) => {
         return res.status(500).send('Database query failed');
       }
 
-    console.log("根据 uid 获取用户课程数据", results);
+    // console.log("根据 uid 获取用户课程数据", results);
   
       if (results.length > 0) {
         res.json(results);  // 返回查询结果
@@ -341,7 +341,6 @@ app.post('/api/submit', (req, res) => {
 
  // API 路由：根据 uid 获取个人信息
  app.get('/api/user-info', (req, res) => {
-  // console.log("req.query : " + req.query);
   const { uid } = req.query; // 从 URL 参数中获取 psid
 
   // 确保提供了 uid 参数
@@ -384,7 +383,6 @@ app.post('/api/submit', (req, res) => {
 
 
 app.get('/api/user-info-solutions', (req, res) => {
-  // console.log("req.query : " + req.query);
   const { uid } = req.query; // 从 URL 参数中获取 psid
 
   // 确保提供了 uid 参数

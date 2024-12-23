@@ -105,9 +105,11 @@
 				});
 	
 				const result = await response.json();
-	
+        console.log("查询结果:", JSON.stringify(result, null, 2));
 				if (result.success) {
-					// 登录成功，根据返回的 URL 跳转
+					// 无论头像保存是否成功，继续执行跳转
+          console.log(result.nickname);
+					saveAvatarImage(result.color, result.nickname, result.uid);
 					window.location.href = result.redirectUrl;
 				} else {
 					alert("登录失败：" + result.message);
@@ -117,7 +119,71 @@
 				alert("登录失败，请稍后重试。");
 			}
 		});
-	
+		async function saveAvatarImage(color, nickname, uid) {
+      console.log(nickname);
+      const avatarDataUrl = generateAvatar(color, nickname); // 生成头像图片
+      const filePath = `../frontend/public/assets/images/header_test.png`; // 固定头像保存路径
+      
+      // 使用 File System API 保存文件
+      try {
+        // 将 Base64 转为 Blob
+        const blob = dataURLToBlob(avatarDataUrl);
+
+        // 调用后端保存 API
+        const response = await fetch("http://localhost:5000/api/save-avatar", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                dataUrl: avatarDataUrl,
+                filePath: filePath,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error("保存头像失败");
+        }
+        console.log(`头像已成功保存到: ${filePath}`);
+      } catch (error) {
+          console.error("保存头像时出错:", error);
+      }
+		}
+
+		// 将 Base64 数据转换为 Blob
+		function dataURLToBlob(dataUrl) {
+      const arr = dataUrl.split(",");
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+          u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    }
+
+		function generateAvatar(color, nickname) {
+			const canvas = document.createElement("canvas");
+			const size = 190; // 头像大小
+			canvas.width = size;
+			canvas.height = size;
+			const ctx = canvas.getContext("2d");
+
+			// 绘制背景
+			ctx.fillStyle = color || "#ccc";
+			ctx.fillRect(0, 0, size, size);
+
+			// 绘制首字母
+			ctx.font = "bold 64px Arial";
+			ctx.fillStyle = "#fff";
+			ctx.textAlign = "center";
+			ctx.textBaseline = "middle";
+			ctx.fillText(nickname?nickname[0].toUpperCase() : "N", size / 2, size / 2);
+
+			return canvas.toDataURL("image/png"); // 返回 Base64 图片
+		}
+
 		// 提交注册表单逻辑
 		document.getElementById('register-form').addEventListener('submit', async function (e) {
 			e.preventDefault(); // 阻止表单默认提交

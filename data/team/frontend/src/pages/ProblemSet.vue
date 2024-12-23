@@ -89,8 +89,9 @@
     },
 
     // 跳转到问题详情页面
-    goToProblem(psid,uid) {
-      window.location.href = `ProblemList.html?psid=${psid}&uid=${uid}`;
+    goToProblem(psid) {
+      
+      window.location.href = `Problem.html?uid=${this.uid}&psid=${psid}`;
     }
 
   }

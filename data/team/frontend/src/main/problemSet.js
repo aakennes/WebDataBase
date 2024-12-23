@@ -12,4 +12,4 @@ console.log('uid:', uid);
 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!已进入problemSet.js");
 
 // 创建 Vue 实例，并将 cid 传递到组件
-createApp(ProblemSet, { cid , uid}).mount('#app');
+createApp(ProblemSet, { uid, cid }).mount('#app');
