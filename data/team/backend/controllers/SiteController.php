@@ -268,6 +268,36 @@ class SiteController extends Controller
             $totalSubmissions_day = array_reverse($totalSubmissions_day);
             $passedSubmissions_day = array_reverse($passedSubmissions_day);
 
+
+        //计算这7天提交总人数
+        $totalUniqueUsers = Solution::find()
+            ->select(['uid']) // 选择用户ID
+            ->where(['pid' => $pids]) // 限制在指定的习题集中
+            ->andWhere(['>=', 'DATE(`when`)', $dates[0]]) // 使用 $dates[0] 作为时间范围
+            ->distinct() // 去重
+            ->count(); // 统计数量
+
+        // 计算这7天提交成绩低于60的总次数
+        $totalLowScoreSubmissions = Solution::find()
+            ->select(['uid']) // 选择用户ID
+            ->where(['pid' => $pids]) // 限制在指定的习题集中
+            ->andWhere(['>=', 'DATE(`when`)', $dates[0]]) // 使用 $dates[0] 作为时间范围
+            ->andWhere(['<', 'score', 60]) // 成绩低于60
+            ->count(); // 统计提交次数
+        
+        // 计算这7天提交涉及的题目
+        $totaldone = Solution::find()
+            ->select(['pid']) // 选择题目ID
+            ->where(['pid' => $pids]) // 限制在指定的习题集中
+            ->andWhere(['>=', 'DATE(`when`)', $dates[0]]) // 使用 $dates[0] 作为时间范围
+            ->distinct() // 去重
+            ->count(); // 统计提交次数
+
+        $pids_num = Problem::find()
+            ->select('pid')
+            ->where(['psid' => $psid])
+            ->count();
+
         return $this->render('index2', [
             'allstu' => $allstu,
             'totalSubmissions' => $totalSubmissions,
@@ -276,6 +306,10 @@ class SiteController extends Controller
             'dates' => $dates,
             'total_submissions' => $totalSubmissions_day,
             'passed_submissions' => $passedSubmissions_day,
+            'totalUniqueUsers' => $totalUniqueUsers,
+            'totalLowScoreSubmissions' => $totalLowScoreSubmissions,
+            'totaldone' => $totaldone,
+            'pids_num' => $pids_num,
         
         ]); // 渲染 views/site/index2.php
     }

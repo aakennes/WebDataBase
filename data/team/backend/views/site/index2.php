@@ -147,31 +147,46 @@
                                             <div id="sales-chart"></div>
                                         </div> <!-- /.col -->
                                         <div class="col-md-4">
-                                            <p class="text-center"> <strong>Goal Completion</strong> </p>
+                                            <p class="text-center"> <strong>周期统计</strong> </p>
                                             <div class="progress-group">
-                                                Add Products to Cart
-                                                <span class="float-end"><b>160</b>/200</span>
+                                                通过情况
+                                                <span class="float-end"><b><?= array_sum($passed_submissions) ?></b>/ <?= array_sum($total_submissions) ?></span>
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar text-bg-primary" style="width: 80%"></div>
+                                                    <?php
+                                                        $total = array_sum($total_submissions);
+                                                        $passed = array_sum($passed_submissions);
+                                                        $percentage = $total > 0 ? ($passed / $total) * 100 : 0; // 避免除以零
+                                                    ?>
+                                                    <div class="progress-bar text-bg-primary" style="width: <?= number_format($percentage, 2) ?>%;"></div>
                                                 </div>
                                             </div> <!-- /.progress-group -->
                                             <div class="progress-group">
-                                                Complete Purchase
-                                                <span class="float-end"><b>310</b>/400</span>
+                                                提交人数
+                                                <span class="float-end"><b><?= $totalUniqueUsers ?> </b> / <?= $allstu ?> </span>
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar text-bg-danger" style="width: 75%"></div>
+                                                    <?php
+                                                        $percentage = $allstu > 0 ? ($totalUniqueUsers / $allstu) * 100 : 0; // 避免除以零
+                                                    ?>
+                                                    <div class="progress-bar text-bg-danger" style="width: <?= number_format($percentage, 2) ?>%"></div>
                                                 </div>
                                             </div> <!-- /.progress-group -->
-                                            <div class="progress-group"> <span class="progress-text">Visit Premium Page</span> <span class="float-end"><b>480</b>/800</span>
+                                            <div class="progress-group"> <span class="progress-text">不及格提交次数</span> <span class="float-end"><b><?= $totalLowScoreSubmissions ?></b>/ <?= array_sum($total_submissions) ?></span>
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar text-bg-success" style="width: 60%"></div>
+                                                    <?php
+                                                        $total = array_sum($total_submissions);
+                                                        $percentage = $total > 0 ? ($totalLowScoreSubmissions / $total) * 100 : 0; // 避免除以零
+                                                    ?>
+                                                    <div class="progress-bar text-bg-success" style="width: <?= number_format($percentage, 2) ?>%"></div>
                                                 </div>
                                             </div> <!-- /.progress-group -->
                                             <div class="progress-group">
-                                                Send Inquiries
-                                                <span class="float-end"><b>250</b>/500</span>
+                                                被完成题目数
+                                                <span class="float-end"><b><?= $totaldone ?></b>/<?= $pids_num ?></span>
                                                 <div class="progress progress-sm">
-                                                    <div class="progress-bar text-bg-warning" style="width: 50%"></div>
+                                                    <?php
+                                                        $percentage = $pids_num > 0 ? ($totaldone / $pids_num) * 100 : 0; // 避免除以零
+                                                    ?>
+                                                    <div class="progress-bar text-bg-warning" style="width: <?= number_format($percentage, 2) ?>%"></div>
                                                 </div>
                                             </div> <!-- /.progress-group -->
                                         </div> <!-- /.col -->

@@ -13,7 +13,7 @@ app.use(express.json()); // 解析 JSON 数据
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'pwd',
+    password: '*klsdyn*3C',
     database: 'Web_Database'
   });
 
