@@ -124,7 +124,7 @@ use yii\helpers\Html;
                             <div class="card mb-4">
                                 <div class="card-header border-0">
                                     <div class="d-flex justify-content-between">
-                                        <h3 class="card-title">课程情况</h3> 
+                                        <h3 class="card-title">课程总提交情况</h3> 
                                     </div>
                                 </div>
                                 <div class="card-body">
