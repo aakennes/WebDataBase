@@ -61,49 +61,6 @@ app.get('/api/courses', (req, res) => {
   });
 
 
-// // 根路由：测试数据库连接
-// app.get('/', (req, res) => {
-//     // 查询数据库获取所有课程数据
-//     const query = `
-//     SELECT 
-//         c.cid AS id,
-//         c.title AS name,
-//         c.description,
-//         c.owner_id,
-//         c.passcode,
-//         c.number
-//     FROM 
-//         course c
-//     `;
-    
-//     db.execute(query, (err, results) => {
-//       if (err) {
-//         return res.status(500).send('Database query failed');
-//       }
-  
-  
-//       let html = `
-//         <html>
-//           <head>
-//             <title>当前数据</title>
-//             <style>
-//               body { font-family: Arial, sans-serif; margin: 20px; }
-//               h1 { color: #333; }
-//               pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; }
-//             </style>
-//           </head>
-//           <body>
-//             <h1>当前数据</h1>
-//             <pre>${JSON.stringify(results, null, 2)}</pre>
-//           </body>
-//         </html>
-//       `;
-//       res.send(html);
-//     });
-// });
-
-
-  
 
 // API 路由：获取课程详情
 app.get('/api/courseInfo', (req, res) => {
@@ -135,8 +92,6 @@ app.get('/api/courseInfo', (req, res) => {
           console.error('数据库查询失败:', err);
           return res.status(500).send('数据库查询失败');
       }
-
-    console.log("获取课程详情",results);
 
       if (results.length > 0) {
           res.json(results[0]); // 返回查询结果的第一个课程（因为 cid 是唯一的）
@@ -177,12 +132,101 @@ app.get('/api/problemsets', (req, res) => {
   
       res.json(results); // 返回查询结果
     });
+});
+
+
+// API 路由：根据 psid 获取习题集具体信息
+app.get('/api/problemset', (req, res) => {
+
+  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!已进入problemlist.js");
+
+  const { psid } = req.query; // 从 URL 参数中获取 psid
+
+  // 确保提供了 psid 参数
+  if (!psid) {
+    return res.status(400).send('psid 参数是必须的');
+  }
+
+  // 查询数据库获取与 psid 相关的习题集信息
+  const query = `
+    SELECT 
+      psid,
+      title,
+      description,
+      cid,
+      owner_id,
+      start_time,
+      end_time
+    FROM 
+      problemset
+    WHERE 
+      psid = ?
+  `;
+
+  db.execute(query, [psid], (err, results) => {
+    if (err) {
+      console.error('查询数据库失败:', err);
+      return res.status(500).send('数据库查询失败');
+    }
+
+    console.log("到底有没有！！！！！！！！！",results);
+
+    // 如果查询到结果，返回结果；否则返回 404
+    if (results.length > 0) {
+      res.json(results[0]); // 返回查询结果的第一个习题集（因为 psid 是唯一的）
+    } else {
+      res.status(404).send('未找到对应的习题集');
+    }
   });
-  
+});
 
 
+// API 路由：根据 psid 获取习题集中所有题目
+app.get('/api/problems', (req, res) => {
+  const { psid } = req.query; // 获取传入的 psid 参数
+
+  // 确保提供了 psid 参数
+  if (!psid) {
+    return res.status(400).send('psid 参数是必须的');
+  }
+
+  // 查询属于该习题集的所有题目信息
+  const query = `
+    SELECT 
+      p.pid, 
+      p.psid, 
+      p.title, 
+      p.submit_ac, 
+      p.submit_all, 
+      p.cases, 
+      p.time_limit, 
+      p.memory_limit, 
+      p.owner_id
+    FROM 
+      problem p
+    JOIN 
+      problemset ps ON p.psid = ps.psid
+    WHERE 
+      p.psid = ?
+  `;
+
+  db.execute(query, [psid], (err, results) => {
+    if (err) {
+      console.error('查询数据库失败:', err);
+      return res.status(500).send('数据库查询失败');
+    }
+
+    // 如果查询到结果，返回题目列表；否则返回空列表
+    if (results.length > 0) {
+      res.json(results);
+    } else {
+      res.status(404).send('未找到对应的题目');
+    }
+  });
+});
   
- // API 路由：根据 psid 获取所有相关的习题信息
+
+ // API 路由：根据 psid 获取习题所有相关的信息
 app.get('/api/problem', (req, res) => {
   const { psid } = req.query; // 从 URL 参数中获取 psid
 
@@ -224,6 +268,33 @@ app.get('/api/problem', (req, res) => {
   });
 });
 
+// 获取当前用户在某个问题上的最高分
+app.get('/api/highestScore', (req, res) => {
+  const { uid, pid } = req.query;
+
+  if (!uid || !pid) {
+    return res.status(400).send('uid 和 pid 参数是必须的');
+  }
+
+  const query = `
+    SELECT MAX(score) AS highestScore
+    FROM solution
+    WHERE uid = ? AND pid = ?
+  `;
+
+  db.execute(query, [uid, pid], (err, results) => {
+    if (err) {
+      console.error('查询最高分失败:', err);
+      return res.status(500).send('数据库查询失败');
+    }
+
+    res.json({ highestScore: results[0].highestScore });
+  });
+});
+
+
+
+
  // API 路由：根据 uid 获取个人信息
  app.get('/api/user-info', (req, res) => {
   // console.log("req.query : " + req.query);
@@ -263,6 +334,10 @@ app.get('/api/problem', (req, res) => {
       }
   });
 });
+
+
+
+
 
 app.get('/api/user-info-solutions', (req, res) => {
   // console.log("req.query : " + req.query);

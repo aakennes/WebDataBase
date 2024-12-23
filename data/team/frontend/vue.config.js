@@ -16,6 +16,12 @@ module.exports = defineConfig({
       filename: 'ProblemSet.html', // 输出的 HTML 文件名
       title: 'Problem Set', // 页面标题
     },
+    problemList: {
+      entry: './src/main/problemList.js', // 问题集入口文件
+      template: './public/ProblemList.html', // 问题集 HTML 模板
+      filename: 'ProblemList.html', // 输出的 HTML 文件名
+      title: 'Problem List', // 页面标题
+    },
     problem:{
       entry: 'src/main/problem.js', // 问题集入口文件
       template: 'public/Problem.html', // 问题集 HTML 模板

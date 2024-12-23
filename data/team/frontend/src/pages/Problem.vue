@@ -2,7 +2,7 @@
  <div class="container">
     <!-- 题目配置 -->
     <div class="section-title">
-      <h2>📖 题目配置</h2>
+      <h2>📖 题目</h2>
     </div>
     <div v-if="problem">
       <ul class="problem-details">
@@ -10,11 +10,7 @@
         <li><strong>编号：</strong> {{ problem[0].pid }}</li>
         <li><strong>时间限制：</strong> {{ problem[0].time_limit }} ms</li>
         <li><strong>空间限制：</strong> {{ problem[0].memory_limit }} KiB</li>
-        <li><strong>最高分：</strong>
-          <span :class="{'status-success': problem.status === '已通过', 'status-failed': problem.status !== '已通过'}">
-            {{ problem[0].status }}
-          </span>
-        </li>
+        <li><strong>最高分：</strong> {{ this.highestScore !== null ? this.highestScore : '未提交' }}</li>
         <li><strong>通过率：</strong> {{ problem[0].submit_ac }} / {{ problem[0].submit_all }}</li>
         <li><strong>评测全部测试点：</strong> 是</li>
         <li><strong>Special Judge：</strong> 未启用</li>
@@ -38,7 +34,7 @@
 <script>
   export default {
     name: 'ProblemPage',
-    props: ["psid"], // 从父组件或 URL 中传递课程 ID (cid)
+    props: ["psid", "uid"], // 从父组件或 URL 中传递课程 ID (cid)
     data() {
       return {
         problem: [], // 从后端加载的习题详情
@@ -52,6 +48,12 @@
       } else {
         console.error('未提供 psid 参数');
       }
+
+      if(this.uid) {
+        this.fetchHighestScore();
+      } else {
+        console.error('未提供 uid 或 psid 参数');
+      }
     },
     methods: {
       // 从后端获取习题详情
@@ -63,6 +65,7 @@
           }
           const data = await response.json();
           this.problem = data;
+          this.pid = this.problem[0].pid;
           console.log("解决问题的关键就是问题的关键",this.problem)
           if (this.problem.length > 0) {
               console.log("习题详情", this.problem[0].title);
@@ -72,6 +75,22 @@
 
         } catch (error) {
           console.error('获取习题详情失败:', error);
+        }
+      },
+      // 从后端获取当前用户在该问题上的最高分
+      async fetchHighestScore() {
+        try {
+          const response = await fetch(`http://localhost:3000/api/highestScore?uid=${this.uid}&pid=${this.pid}`);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          this.highestScore = data.highestScore;
+          console.log("当前uid", this.uid);
+          console.log("当前pid", this.pid);
+          console.log("当前用户的最高分", this.highestScore);
+        } catch (error) {
+          console.error('获取最高分失败:', error);
         }
       },
     },
