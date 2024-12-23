@@ -139,7 +139,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #fffcfc;
+  background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 20px;
@@ -194,7 +194,7 @@ export default {
 /* 最近提交记录部分样式 */
 .recent-submissions {
   flex: 2;
-  background-color: #fffcfc;
+  background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 8px;
   padding: 40px;

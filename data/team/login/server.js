@@ -83,18 +83,6 @@ app.post("/api/check-email", (req, res) => {
 const os = require('os');
 const { exec } = require("child_process");
 
-// 获取本机真实 IP 地址
-function getLocalIPAddress() {
-    const interfaces = os.networkInterfaces();
-    for (const iface of Object.values(interfaces)) {
-        for (const config of iface) {
-            if (config.family === 'IPv4' && !config.internal) {
-                return config.address; // 返回非内网地址
-            }
-        }
-    }
-    return 'localhost'; // 找不到真实地址时使用 localhost
-}
 
 app.post("/api/login", (req, res) => {
     const { email, isBackend } = req.body;
@@ -156,6 +144,7 @@ app.post("/api/login", (req, res) => {
                     }
                 });
             } else {
+                const frontendbackCommand = exec("cd ../frontend/frontendBack && node server.js");
                 const frontendCommand = exec("cd ../frontend && npm run serve");
                 let frontendPort = null;
                 frontendCommand.stdout.on("data", (data) => {

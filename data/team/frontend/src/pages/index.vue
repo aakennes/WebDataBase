@@ -60,12 +60,10 @@
   
   <style scoped>
 .container {
-  /* margin-top: -20px; */
-  padding-top: 100px;
   background-color: #f8f9fa;
   margin: 60px auto;
   max-width: 1000px;
-  /* padding: 30px;  */
+  padding: 30px; 
   border-radius: 10px;
 }
 .section {
