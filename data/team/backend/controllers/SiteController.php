@@ -19,7 +19,7 @@ use app\models\Problem;
 use app\models\ProblemMaintainer;
 use app\models\Solution;
 use app\models\ProblemsetUser;
-
+use app\models\Problemset;
 use app\models\Course;
 use app\models\CourseUser;
 use yii\helpers\ArrayHelper;
@@ -213,10 +213,16 @@ class SiteController extends Controller
 
     public function actionIndex2()
     {   
-        $uid = Yii::$app->session->get('uid', null);
-        $psid = 81;
+        // 查询数据库获取所有习题集数据
+        $problemSets = ProblemSet::find()->all(); 
+        // 从 URL 中获取 psid 参数
+        $psid = Yii::$app->request->get('psid', null);  // 获取 psid 参数
+
+        // 如果没有 psid，使用默认值，默认值是 81
+        if ($psid === null) {
+            $psid = 81;
+        }
         $allstu = 0;
-        $psid = 81;
         $allstu = ProblemsetUser::find()
             ->where(['psid' => $psid])
             ->count(); // 计算满足条件的记录总数
@@ -329,6 +335,17 @@ class SiteController extends Controller
             ->limit(10)  // 限制结果为前20条
             ->all();
 
+        // 饼图
+        // 查询不同分数段的提交数
+        $scoreRanges = [
+            Solution::find()->where(['pid' => $pids, 'score' => 100])->count(),
+            Solution::find()->where(['pid' => $pids])->andWhere(['between', 'score', 90, 99])->count(),
+            Solution::find()->where(['pid' => $pids])->andWhere(['between', 'score', 80, 89])->count(),
+            Solution::find()->where(['pid' => $pids])->andWhere(['between', 'score', 70, 79])->count(),
+            Solution::find()->where(['pid' => $pids])->andWhere(['between', 'score', 60, 69])->count(),
+            Solution::find()->where(['pid' => $pids])->andWhere(['<', 'score', 60])->count(),
+        ];
+
         return $this->render('index2', [
             'allstu' => $allstu,
             'totalSubmissions' => $totalSubmissions,
@@ -342,6 +359,8 @@ class SiteController extends Controller
             'totaldone' => $totaldone,
             'pids_num' => $pids_num,
             'submissionData' => $submissionData,
+            'problemSets' => $problemSets,
+            'scoreRanges' => $scoreRanges,
         ]); // 渲染 views/site/index2.php
     }
 
