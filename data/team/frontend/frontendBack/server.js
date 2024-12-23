@@ -293,6 +293,50 @@ app.get('/api/highestScore', (req, res) => {
 });
 
 
+// API 路由：提交题目
+app.post('/api/submit', (req, res) => {
+  const { uid, pid, code } = req.body;
+
+  // 检查参数是否齐全
+  if (!uid || !pid || !code) {
+    return res.status(400).send('uid、pid 和 code 参数是必须的');
+  }
+
+  // 生成随机的运行时间、程序大小和分数
+  const runTime = Math.floor(Math.random() * 5000) + 100; // 运行时间随机值（100ms - 5000ms）
+  const codeSize = Buffer.byteLength(code, 'utf-8'); // 程序大小（以字节为单位）
+  const runMemory = 65536; // 固定的内存使用（以 KB 为单位）
+  const score = Math.floor(Math.random() * 11) * 10; // 分数随机值（0, 10, 20, ..., 100）
+  const currentTime = new Date(); // 当前时间
+
+  // 插入数据到 solution 表
+  const query = `
+    INSERT INTO solution (uid, pid, code_size, run_time, run_memory, \`when\`, score)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.execute(query, [uid, pid, codeSize, runTime, runMemory, currentTime, score], (err, results) => {
+    if (err) {
+      console.error('插入数据失败:', err);
+      return res.status(500).send('数据库插入失败');
+    }
+
+    // 返回成功结果
+    res.json({
+      message: '提交成功',
+      result: {
+        uid,
+        pid,
+        codeSize,
+        runTime,
+        runMemory,
+        score,
+        submittedAt: currentTime
+      }
+    });
+  });
+});
+
 
 
  // API 路由：根据 uid 获取个人信息

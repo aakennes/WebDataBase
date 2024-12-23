@@ -42,7 +42,7 @@
 <script>
 export default {
   name: "ProblemList",
-  props: ["psid"], // 接收传入的习题集 ID
+  props: ["psid","uid"], // 接收传入的习题集 ID
   data() {
     return {
       problemSet: {}, // 当前习题集信息
