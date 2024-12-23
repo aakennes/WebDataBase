@@ -112,47 +112,69 @@ app.post("/api/login", (req, res) => {
 
         if (results.length > 0) {
             const uid = results[0].uid; // 获取 UID
-            const ipAddress = getLocalIPAddress();
             
             if (isBackend) {
-				// console.log(`获取到的 IP 地址: ${ipAddress}`);
-                // 动态启动后台服务
-                exec("cd ../backend && php yii serve", (err, stdout, stderr) => {
-                    if (err) {
-                        console.error(`启动后台服务失败: ${stderr}`);
-                        return res.status(500).json({ success: false, message: "启动后台失败" });
-                    }
+                // console.log("准备启动后台服务...");
+                // // const backendCommand = exec("cd ../backend && php yii serve --port=8081");
 
-                    console.log(`后台服务启动成功: ${stdout}`);
-                    res.json({ success: true, redirectUrl: `http://localhost:8080/backend?uid=${uid}` });
+                // exec("cd ../backend && php yii serve --port=8081", (err, stdout, stderr) => {
+                //     if (err) {
+                //         console.error(`启动后台服务失败: ${stderr}`);
+                //         return res.status(500).json({ success: false, message: "启动后台失败" });
+                //     }
+    
+                //     console.log(`后台服务启动成功: ${stdout}`);
+                //     res.json({ success: true, redirectUrl: `http://localhost:8081?uid=${uid}` });
+                // });
+                const spawn = require('child_process').spawn;
+                console.log("准备启动后台服务...");
+                const backendCommand = spawn('php', ['yii', 'serve'], { cwd: '../backend' });
+                let backendPort = null;
+                backendCommand.stdout.on('data', (data) => {
+                    const output = data.toString();
+                    console.log(`后台服务输出: ${output}`);
+                    const portMatch = output.match(/http:\/\/localhost:(\d+)/);
+                    if (portMatch && !backendPort) {
+                        backendPort = portMatch[1];
+                        console.log(`捕获到后台服务启动端口: ${backendPort}`);
+
+                        res.json({
+                            success: true,
+                            redirectUrl: `http://localhost:${backendPort}/backend?uid=${uid}`
+                        });
+                    }
+                });
+                // 错误日志
+                // backendCommand.stderr.on('data', (data) => {
+                //     console.error(`后台服务错误: ${data.toString()}`);
+                // });
+                backendCommand.on('close', (code) => {
+                    if (code !== 0) {
+                        console.error(`后台服务进程退出，错误码: ${code}`);
+                        res.status(500).json({ success: false, message: "启动后台失败" });
+                    } else {
+                        console.log('后台服务正常退出');
+                    }
                 });
             } else {
-                // 动态启动前台服务
                 const frontendCommand = exec("cd ../frontend && npm run serve");
-
                 let frontendPort = null;
-
-                // 捕获服务输出日志
                 frontendCommand.stdout.on("data", (data) => {
                     console.log(`前台服务输出: ${data}`);
                     const portMatch = data.match(/Local:.*http:\/\/.*:(\d+)/); // 修改正则
                     if (portMatch && !frontendPort) {
                         frontendPort = portMatch[1];
-                        console.log(`前台服务启动成功，端口: ${frontendPort}`);
-
-                        // 返回给前端
+                        // console.log(`前台服务启动成功，端口: ${frontendPort}`);
                         res.json({
                             success: true,
-                            redirectUrl: `http://${ipAddress}:${frontendPort}?uid=${uid}`,
+                            redirectUrl: `http://localhost:${frontendPort}?uid=${uid}`,
                         });
                     }
                 });
-
                 // 捕获服务启动错误
                 frontendCommand.stderr.on("data", (data) => {
                     console.error(`前台服务启动失败: ${data}`);
                 });
-
                 // 监听服务关闭事件
                 frontendCommand.on("close", (code) => {
                     if (!frontendPort) {
