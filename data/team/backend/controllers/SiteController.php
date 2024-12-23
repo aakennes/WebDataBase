@@ -20,6 +20,9 @@ use app\models\ProblemMaintainer;
 use app\models\Solution;
 use app\models\ProblemsetUser;
 
+use app\models\Course;
+use app\models\CourseUser;
+use yii\helpers\ArrayHelper;
 class SiteController extends Controller
 {
     /**
@@ -278,8 +281,134 @@ class SiteController extends Controller
     }
 
     public function actionIndex3()
-    {
-        return $this->render('index3'); // 渲染 views/site/index3.php
+    {   
+        // 课程ID
+        $courseIds = [12, 13, 14]; // 高级语言程序设计2-2 (12), Alg2024 (13), 密码学基础2024 (14)
+
+        // 上方栏数据初始化
+        $submitAllCount = 0;
+        $submitac = 0;
+        $accuracy = 0;
+        $passstu = 0;
+        $allsubmit = 0;
+
+        // 查询每个课程的提交数据（最近7天）
+        $results = [];
+        foreach ($courseIds as $cid) {
+            $courseResults = Solution::find()
+                ->select([
+                    'submission_date' => 'DATE(`when`)',  // 提交日期
+                    'total_submissions' => 'COUNT(*)', // 总提交次数
+                    'passed_submissions' => 'SUM(CASE WHEN score = 100 THEN 1 ELSE 0 END)', // 通过次数
+                ])
+                ->innerJoin('course_user', 'course_user.uid = solution.uid') // 关联课程和用户表
+                ->where(['course_user.cid' => $cid]) // 过滤课程ID
+                ->groupBy(['submission_date'])
+                ->orderBy(['submission_date' => SORT_DESC]) // 按日期倒序排列
+                ->limit(7) // 只取最近7天
+                ->asArray() // 返回数组
+                ->all();
+
+            // 构造每天的提交次数数组和通过次数数组
+            $dates = [];
+            $totalSubmissions = [];
+            $passedSubmissions = [];
+            $passRates = []; // 新增通过率数组
+
+            foreach ($courseResults as $result) {
+                $dates[] = $result['submission_date'];
+                $totalSubmissions[] = $result['total_submissions'];
+                $passedSubmissions[] = $result['passed_submissions'];
+
+                // 计算通过率，并保留两位小数
+                $passRate = $result['total_submissions'] > 0 
+                    ? round(($result['passed_submissions'] / $result['total_submissions']) * 100) 
+                    : 0;
+                $passRates[] = $passRate;
+            }
+
+            // 按日期升序排序（因为查询结果是倒序）
+            $dates = array_reverse($dates);
+            $totalSubmissions = array_reverse($totalSubmissions);
+            $passedSubmissions = array_reverse($passedSubmissions);
+            $passRates = array_reverse($passRates); // 反转通过率数组
+
+            $results[] = [
+                'cid' => $cid,
+                'dates' => $dates,
+                'total_submissions' => $totalSubmissions,
+                'passed_submissions' => $passedSubmissions,
+                'pass_rates' => $passRates, // 添加通过率数据
+            ];
+        }
+
+        // 获取每个课程的提交次数、通过次数（得分100）、完成人数
+        $submissionCounts = CourseUser::find()
+            ->select(['course.cid', 'course.title', 'COUNT(solution.sid) AS submission_count'])  // 添加 course.title
+            ->innerJoin('solution', 'course_user.uid = solution.uid')
+            ->innerJoin('course', 'course_user.cid = course.cid')
+            ->groupBy('course.cid')
+            ->asArray()
+            ->all();
+
+        $passCounts = CourseUser::find()
+            ->select(['course.cid', 'COUNT(solution.sid) AS pass_count'])
+            ->innerJoin('solution', 'course_user.uid = solution.uid')
+            ->innerJoin('course', 'course_user.cid = course.cid')
+            ->where(['solution.score' => 100])
+            ->groupBy('course.cid')
+            ->asArray()
+            ->all();
+
+        $finishUsers = CourseUser::find()
+            ->select(['course.cid', 'COUNT(DISTINCT solution.uid) AS finish_user_count'])
+            ->innerJoin('solution', 'course_user.uid = solution.uid')
+            ->innerJoin('course', 'course_user.cid = course.cid')
+            ->where(['solution.score' => 100])
+            ->groupBy('course.cid')
+            ->asArray()
+            ->all();
+
+        // 将结果转为关联数组以便快速查找
+        $passCountsAssoc = ArrayHelper::index($passCounts, 'cid');
+        $finishUsersAssoc = ArrayHelper::index($finishUsers, 'cid');
+
+        $courseNames = [];
+        $subCounts = [];
+        $finCounts = [];
+        $finUsers = [];
+
+        foreach ($submissionCounts as $submission) {
+        $courseNames[] = $submission['title'];  
+        $subCounts[] = $submission['submission_count'];
+        $finCounts[] = $passCountsAssoc[$submission['cid']]['pass_count'] ?? 0;
+        $finUsers[] = $finishUsersAssoc[$submission['cid']]['finish_user_count'] ?? 0;
+        }
+
+
+        $submissionData = Solution::find()
+            ->select([
+                'pid',          // 问题ID
+                'uid',          // 提交用户ID
+                'code_size',    // 代码大小
+                'run_time',     // 运行时间
+                'run_memory',       // 运行内存
+                '`when`',   // 提交时间
+                'score',        // 得分
+            ])
+            ->orderBy(['`when`' => SORT_DESC])  // 按提交时间降序排序
+            ->limit(20)  // 限制结果为前20条
+            ->all();
+
+        // 将查询结果传递给视图
+        return $this->render('index3', [
+            'results' => $results,
+            'submissionData' => $submissionData,
+            'courseNames' => $courseNames,
+            'subCounts' => $subCounts,
+            'finCounts' => $finCounts,
+            'finUsers' => $finUsers,
+        ]);// 渲染 views/site/index3.php
     }
 
 
