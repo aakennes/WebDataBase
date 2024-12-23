@@ -24,6 +24,8 @@ use app\models\Course;
 use app\models\User;
 use app\models\CourseUser;
 use yii\helpers\ArrayHelper;
+use app\models\Usercon;
+use app\models\Problemset;
 class SiteController extends Controller
 {
     /**
@@ -93,11 +95,26 @@ class SiteController extends Controller
 
         $uid = $sessionUid;
 
+<<<<<<< HEAD
         $username = User::find()
             ->select(['nickname'])  // 选择 nickname 字段
             ->where(['uid' => $uid]) // 根据 uid 查询
             ->scalar(); // 返回单个字段值
 
+=======
+
+        // 查询该用户名字
+        $username = Usercon::find()
+            ->select(['nickname']) // 只查询 uid 列
+            ->where(['uid' => $uid])            
+            ->one();
+        // if ($username) {
+        //     $nickname = $username->nickname;  // 从对象中提取 nickname 字段
+        // } else {
+        //     $nickname = '默认昵称';  // 如果未找到用户，设置一个默认昵称
+        // }
+        echo (string)$username;
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
         // 查询该用户创建的最新题目的 pid
         $latestProblem = ProblemMaintainer::find()
             ->where(['uid' => $uid])
@@ -182,6 +199,7 @@ class SiteController extends Controller
 
         // 将结果传递给视图
         return $this->render('index', [
+            'username'=>$username,
             'submitAllCount' => $submitAllCount,
             'accuracy' => $accuracy,
             'passstu' => $passstu,
@@ -218,6 +236,7 @@ class SiteController extends Controller
 
     public function actionIndex2()
     {   
+<<<<<<< HEAD
         // 从 session 中获取 uid
         $sessionUid = Yii::$app->session->get('uid', null);
         
@@ -243,6 +262,10 @@ class SiteController extends Controller
         if ($psid === null) {
             $psid = 81;
         }
+=======
+        $uid = Yii::$app->session->get('uid', null);
+        $psid = 81;
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
         $allstu = 0;
         $allstu = ProblemsetUser::find()
             ->where(['psid' => $psid])
@@ -368,7 +391,11 @@ class SiteController extends Controller
         ];
 
         return $this->render('index2', [
+<<<<<<< HEAD
             'username' => $username,
+=======
+            'username'=>$username,
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
             'allstu' => $allstu,
             'totalSubmissions' => $totalSubmissions,
             'totalUsers' => $totalUsers,
@@ -388,6 +415,17 @@ class SiteController extends Controller
 
     public function actionIndex3()
     {   
+<<<<<<< HEAD
+=======
+        // 从 URL 中提取 uid
+        $uid = Yii::$app->request->get('uid', null);
+
+        // 如果 URL 中提供了 uid，保存到 session
+        if ($uid !== null) {
+            Yii::$app->session->set('uid', $uid);
+        }
+        
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
         // 从 session 中获取 uid
         $sessionUid = Yii::$app->session->get('uid', null);
         
@@ -395,6 +433,7 @@ class SiteController extends Controller
         if ($sessionUid === null) {
             throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
         }
+<<<<<<< HEAD
                 
         $uid = $sessionUid;
                 
@@ -403,6 +442,18 @@ class SiteController extends Controller
             ->where(['uid' => $uid]) // 根据 uid 查询
             ->scalar(); // 返回单个字段值
 
+=======
+
+        $uid = $sessionUid;
+
+
+        // 查询该用户名字
+        $username = Usercon::find()
+            ->select(['nickname']) // 只查询 uid 列
+            ->where(['uid' => $uid])            
+            ->one();
+            echo (string)$username; 
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
         // 课程ID
         $courseIds = [12, 13, 14]; // 高级语言程序设计2-2 (12), Alg2024 (13), 密码学基础2024 (14)
 
@@ -523,7 +574,11 @@ class SiteController extends Controller
 
         // 将查询结果传递给视图
         return $this->render('index3', [
+<<<<<<< HEAD
             'username' => $username,
+=======
+            'username'=>$username,
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
             'results' => $results,
             'submissionData' => $submissionData,
             'courseNames' => $courseNames,
@@ -572,5 +627,131 @@ class SiteController extends Controller
     public function actionAbout()
     {
         return $this->render('about');
+    }
+
+
+
+
+    // 删除习题
+    public function actionDeleteProblem($id)
+    {
+        $model = $this->findProblem($id);
+
+        if ($model && $model->delete()) {
+            // 删除成功
+            Yii::$app->session->setFlash('success', '习题删除成功');
+        } else {
+            Yii::$app->session->setFlash('error', '习题删除失败');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    // 删除习题集
+    public function actionDeleteProblemSet($id)
+    {
+        $model = $this->findProblemSet($id);
+
+        if ($model && $model->delete()) {
+            // 删除成功
+            Yii::$app->session->setFlash('success', '习题集删除成功');
+        } else {
+            Yii::$app->session->setFlash('error', '习题集删除失败');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    // 删除课程
+    public function actionDeleteCourse($id)
+    {
+        $model = $this->findCourse($id);
+
+        if ($model && $model->delete()) {
+            // 删除成功
+            Yii::$app->session->setFlash('success', '课程删除成功');
+        } else {
+            Yii::$app->session->setFlash('error', '课程删除失败');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    // 查找习题
+    protected function findProblem($id)
+    {
+        if (($model = Problem::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('找不到对应的习题。');
+    }
+
+    // 查找习题集
+    protected function findProblemSet($id)
+    {
+        if (($model = ProblemSet::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('找不到对应的习题集。');
+    }
+
+    // 查找课程
+    protected function findCourse($id)
+    {
+        if (($model = Course::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('找不到对应的课程。');
+    }
+
+    // 新增习题
+    public function actionAddProblem()
+    {
+        $model = new Problem();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 数据保存成功
+            Yii::$app->session->setFlash('success', '习题新增成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('add-problem', [
+            'model' => $model,
+        ]);
+    }
+
+    // 新增习题集
+    public function actionAddProblemSet()
+    {
+        $model = new ProblemSet();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 数据保存成功
+            Yii::$app->session->setFlash('success', '习题集新增成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('add-problem-set', [
+            'model' => $model,
+        ]);
+    }
+
+    // 新增课程
+    public function actionAddCourse()
+    {
+        $model = new Course();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 数据保存成功
+            Yii::$app->session->setFlash('success', '课程新增成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('add-course', [
+            'model' => $model,
+        ]);
     }
 }
