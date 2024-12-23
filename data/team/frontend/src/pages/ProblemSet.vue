@@ -37,7 +37,8 @@
     </div>
   </div>
   </template>
-  
+
+
 <script>
   export default {
   name: "ProblemSet",
@@ -56,6 +57,7 @@
   methods: {
     // 获取课程信息
     async fetchCourseDetails() {
+      console.log("开始在ProblemSet页面抓取课程信息")
       try {
         const response = await fetch(`http://localhost:3000/api/courseInfo?cid=${this.cid}`);
         if (!response.ok) {
@@ -70,6 +72,7 @@
     },
     // 获取习题集信息
     async fetchProblemSets() {
+      console.log("开始在ProblemSet页面抓取习题集信息")
       try {
         const response = await fetch(`http://localhost:3000/api/problemsets?cid=${this.cid}`);
         if (!response.ok) {

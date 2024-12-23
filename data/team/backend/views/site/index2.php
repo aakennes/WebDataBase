@@ -4,6 +4,7 @@
 * Coding by Cai Yuanhong 2213897; Huang Mingzhou 2211804; 20241221 
 */
 use yii\helpers\Html;
+use yii\helpers\Json; 
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +26,12 @@ use yii\helpers\Html;
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             <img src="../../dist/assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow"
                                 alt="User Image">
-                            <span class="d-none d-md-inline">Alexander Pierce</span>
+<<<<<<< HEAD
+                            <span class="d-none d-md-inline"><?= $username ?></span>
+=======
+                            <!-- 显示用户姓名 -->
+                        <span class="d-none d-md-inline"><?= $username ?></span>
+>>>>>>> b0d7beb (id索引添加，增删管理初步)
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                             <li class="user-header text-bg-primary">
@@ -247,7 +253,7 @@ use yii\helpers\Html;
                             
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <h3 class="card-title">Browser Usage</h3>
+                                    <h3 class="card-title">练习题集</h3>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
                                 </div> <!-- /.card-header -->
                                 <div class="card-body"> <!--begin::Row-->
@@ -259,21 +265,20 @@ use yii\helpers\Html;
                                 </div> <!-- /.card-body -->
                                 <div class="card-footer p-0">
                                     <ul class="nav nav-pills flex-column">
-                                        <li class="nav-item"> <a href="#" class="nav-link">
-                                                United States of America
-                                                <span class="float-end text-danger"> <i class="bi bi-arrow-down fs-7"></i>
-                                                    12%
-                                                </span> </a> </li>
-                                        <li class="nav-item"> <a href="#" class="nav-link">
-                                                India
-                                                <span class="float-end text-success"> <i class="bi bi-arrow-up fs-7"></i> 4%
-                                                </span> </a> </li>
-                                        <li class="nav-item"> <a href="#" class="nav-link">
-                                                China
-                                                <span class="float-end text-info"> <i class="bi bi-arrow-left fs-7"></i> 0%
-                                                </span> </a> </li>
+                                        <?php foreach ($problemSets as $problemSet): ?>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" 
+                                                onclick="location.href='<?= \yii\helpers\Url::to(['site/index2', 'psid' => $problemSet->psid]) ?>'">
+                                                    <?= Html::encode($problemSet->title) ?> <!-- 显示习题集标题 -->
+                                                    <span class="float-end">
+                                                        <i class="bi bi-arrow-right fs-7"></i>
+                                                    </span>
+                                                    <p class="small"><?= Html::encode($problemSet->description) ?></p> <!-- 显示描述 -->
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
                                     </ul>
-                                </div> <!-- /.footer -->
+                                </div>
                             </div> <!-- /.card --> <!-- PRODUCT LIST -->
                             
                         </div> <!-- /.col -->
@@ -293,7 +298,7 @@ use yii\helpers\Html;
         // - MONTHLY SALES CHART -
         //-----------------------
 
-        const sales_chart_options = {
+        const submission_situation = {
             series: [{
                 name: "提交次数",
                 data: <?= json_encode($total_submissions, JSON_NUMERIC_CHECK) ?>,
@@ -330,97 +335,23 @@ use yii\helpers\Html;
             },
         };
 
-        const sales_chart = new ApexCharts(
+        const submission_chart = new ApexCharts(
             document.querySelector("#sales-chart"),
-            sales_chart_options,
+            submission_situation,
         );
-        sales_chart.render();
+        submission_chart.render();
 
-        //---------------------------
-        // - END MONTHLY SALES CHART -
-        //---------------------------
-
-        function createSparklineChart(selector, data) {
-            const options = {
-                series: [{
-                    data
-                }],
-                chart: {
-                    type: "line",
-                    width: 150,
-                    height: 30,
-                    sparkline: {
-                        enabled: true,
-                    },
-                },
-                colors: ["var(--bs-primary)"],
-                stroke: {
-                    width: 2,
-                },
-                tooltip: {
-                    fixed: {
-                        enabled: false,
-                    },
-                    x: {
-                        show: false,
-                    },
-                    y: {
-                        title: {
-                            formatter: function(seriesName) {
-                                return "";
-                            },
-                        },
-                    },
-                    marker: {
-                        show: false,
-                    },
-                },
-            };
-
-            const chart = new ApexCharts(document.querySelector(selector), options);
-            chart.render();
-        }
-
-        const table_sparkline_1_data = [
-            25, 66, 41, 89, 63, 25, 44, 12, 36, 9, 54,
-        ];
-        const table_sparkline_2_data = [
-            12, 56, 21, 39, 73, 45, 64, 52, 36, 59, 44,
-        ];
-        const table_sparkline_3_data = [
-            15, 46, 21, 59, 33, 15, 34, 42, 56, 19, 64,
-        ];
-        const table_sparkline_4_data = [
-            30, 56, 31, 69, 43, 35, 24, 32, 46, 29, 64,
-        ];
-        const table_sparkline_5_data = [
-            20, 76, 51, 79, 53, 35, 54, 22, 36, 49, 64,
-        ];
-        const table_sparkline_6_data = [
-            5, 36, 11, 69, 23, 15, 14, 42, 26, 19, 44,
-        ];
-        const table_sparkline_7_data = [
-            12, 56, 21, 39, 73, 45, 64, 52, 36, 59, 74,
-        ];
-
-        createSparklineChart("#table-sparkline-1", table_sparkline_1_data);
-        createSparklineChart("#table-sparkline-2", table_sparkline_2_data);
-        createSparklineChart("#table-sparkline-3", table_sparkline_3_data);
-        createSparklineChart("#table-sparkline-4", table_sparkline_4_data);
-        createSparklineChart("#table-sparkline-5", table_sparkline_5_data);
-        createSparklineChart("#table-sparkline-6", table_sparkline_6_data);
-        createSparklineChart("#table-sparkline-7", table_sparkline_7_data);
 
         //-------------
         // - PIE CHART -
         //-------------
 
-        const pie_chart_options = {
-            series: [700, 500, 400, 600, 300, 100],
+        const completion_situation = {
+            series:<?= json_encode($scoreRanges, JSON_NUMERIC_CHECK) ?>,
             chart: {
                 type: "donut",
             },
-            labels: ["Chrome", "Edge", "FireFox", "Safari", "Opera", "IE"],
+            labels: ["100", "90-99", "80-89", "70-79", "60-69", "<60"],
             dataLabels: {
                 enabled: false,
             },
@@ -436,7 +367,7 @@ use yii\helpers\Html;
 
         const pie_chart = new ApexCharts(
             document.querySelector("#pie-chart"),
-            pie_chart_options,
+            completion_situation,
         );
         pie_chart.render();
 

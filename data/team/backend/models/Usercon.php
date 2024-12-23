@@ -26,7 +26,7 @@ use Yii;
  * @property Problemset[] $ps1
  * @property Solution[] $solutions
  */
-class User extends \yii\db\ActiveRecord
+class Usercon extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -174,5 +174,10 @@ class User extends \yii\db\ActiveRecord
     public function getSolutions()
     {
         return $this->hasMany(Solution::class, ['uid' => 'uid']);
+    }
+
+    public function __toString()
+    {
+        return (string)$this->nickname;  // 将 nickname 转换为字符串
     }
 }

@@ -1,23 +1,38 @@
 <template>
-    <div class="container">
-      <!-- 习题详情标题 -->
-      <h1 class="title">习题详情</h1>
-      
-      <!-- 习题内容 -->
-      <div v-if="problem">
-        <h2 class="problem-title">{{ problem.title }}</h2>
-        <p class="problem-description">{{ problem.description }}</p>
-        <div class="problem-meta">
-          <p>考试时长: {{ problem.during }} 分钟</p>
-          <p>课程 ID: {{ problem.cid }}</p>
-          <p>创建者: {{ problem.owner_id }}</p>
-        </div>
-      </div>
-      
-      <!-- 加载中或未找到数据 -->
-      <p v-else>加载中...</p>
+ <div class="container">
+    <!-- 题目配置 -->
+    <div class="section-title">
+      <h2>📖 题目配置</h2>
     </div>
-  </template>
+    <div v-if="problem">
+      <ul class="problem-details">
+        <li><strong>题目名：</strong> {{ problem.title }}</li>
+        <li><strong>编号：</strong> {{ problem.pid }}</li>
+        <li><strong>时间限制：</strong> {{ problem.time_limit }} ms</li>
+        <li><strong>空间限制：</strong> {{ problem.memory_limit }} KiB</li>
+        <li><strong>完成状态：</strong>
+          <span :class="{'status-success': problem.status === '已通过', 'status-failed': problem.status !== '已通过'}">
+            {{ problem.status }}
+          </span>
+        </li>
+        <li><strong>通过率：</strong> {{ problem.submit_ac }} / {{ problem.submit_all }}</li>
+        <li><strong>评测全部测试点：</strong> 是</li>
+        <li><strong>Special Judge：</strong> 未启用</li>
+      </ul>
+    </div>
+    <p v-else>加载中...</p>
+
+   <!-- 操作按钮 -->
+   <div class="actions">
+      <button class="submit-problem-btn">
+        <i class="icon">✈</i> 提交题目
+      </button>
+      <button class="view-record-btn">
+        <i class="icon">✔</i> 提交记录
+      </button>
+    </div>
+  </div>
+</template>
   
   <script>
   export default {
@@ -25,8 +40,7 @@
     props: ["psid"], // 从父组件或 URL 中传递课程 ID (cid)
     data() {
       return {
-        psid: null, // 从 URL 中获取的 psid
-        problem: null, // 从后端加载的习题详情
+        problem: [], // 从后端加载的习题详情
       };
     },
     created() {
@@ -49,6 +63,12 @@
           const data = await response.json();
           this.problem = data;
           console.log("解决问题的关键就是问题的关键",this.problem)
+          if (this.problem.length > 0) {
+              console.log("习题详情", this.problem[0].title);
+          } else {
+              console.log("没有找到习题详情");
+          }
+
         } catch (error) {
           console.error('获取习题详情失败:', error);
         }
@@ -58,39 +78,95 @@
   </script>
   
   <style scoped>
-  .container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 40px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .title {
-    font-size: 30px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .problem-title {
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #555;
-  }
-  
-  .problem-description {
-    font-size: 16px;
-    margin-bottom: 20px;
-    color: #777;
-  }
-  
-  .problem-meta p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 10px;
-  }
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.problem-details {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 20px 0;
+}
+
+.problem-details li {
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.status-success {
+  color: green;
+}
+
+.status-failed {
+  color: red;
+}
+
+.quick-jump select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column; /* 垂直排列按钮 */
+  gap: 10px;
+}
+
+.submit-problem-btn,
+.view-record-btn {
+  padding: 10px 0;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submit-problem-btn {
+  color: #a6197d;
+  border-color: #a6197d;
+  background-color: transparent;
+}
+
+.view-record-btn {
+  color: #0f9d58;
+  border-color: #0f9d58;
+  background-color: transparent;
+}
+
+.submit-problem-btn:hover {
+  background-color: rgba(166, 25, 125, 0.1);
+}
+
+.view-record-btn:hover {
+  background-color: rgba(15, 157, 88, 0.1);
+}
+
+.icon {
+  font-size: 24px;
+  margin-right: 8px;
+}
   </style>
   
