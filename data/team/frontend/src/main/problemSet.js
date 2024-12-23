@@ -4,7 +4,8 @@ import ProblemSet from '@/pages/ProblemSet.vue'; // 引入 Vue 组件
 // 从 URL 获取 `cid`
 const urlParams = new URLSearchParams(window.location.search);
 const cid = urlParams.get('cid'); // 获取 cid
-const uid = urlParams.get('uid');
+const uid = urlParams.get('uid'); // 获取 uid
+
 
 console.log('cid:', cid);
 console.log('uid:', uid);

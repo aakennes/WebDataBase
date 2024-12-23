@@ -15,7 +15,7 @@
             v-for="problemset in problemsets" 
             :key="problemset.psid" 
             class="problem-item"
-            @click="goToProblem(problemset.psid)" 
+            @click="goToProblem(problemset.psid,this.uid)" 
           >
             <div class="problem-title">
               第{{ problemset.psid }}题: {{ problemset.title }}
@@ -36,13 +36,13 @@
       <p v-else class="no-problems">暂无考试题目</p>
     </div>
   </div>
-  </template>
+</template>
 
 
 <script>
   export default {
   name: "ProblemSet",
-  props: ["cid", 'uid'], // 从父组件或 URL 中传递课程 ID (cid)
+  props: ["cid", "uid"], // 从父组件或 URL 中传递课程 ID (cid) 和用户 ID (uid)
   data() {
     return {
       course: {}, // 初始化课程信息为空对象
@@ -51,6 +51,7 @@
   },
   async created() {
     // 在组件创建时获取课程详情和习题集数据
+    console.log("此时用户uid是", this.uid); // 检查 uid 是否正确传递
     await this.fetchCourseDetails();
     await this.fetchProblemSets();
   },
