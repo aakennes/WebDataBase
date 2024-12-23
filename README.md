@@ -27,7 +27,6 @@ user   -> 个人
 	----backend	--
 ```
 
- 
 ## 环境要求
 
 环境要求:
@@ -43,21 +42,29 @@ node v22.12.0
 在team文件夹中使用以下指令初始化并运行:
 
 ```bash
-sudo chmod 1733 /var/lib/php/sessions
+# 前台
 cd frontend
 npm install
-cd ../login
+cd frontend/frontendBack
+npm install
+cd ../../login
 npm install
 npm start
+# 后台
+sudo chmod 1733 /var/lib/php/sessions
 ```
+
+UPDATE problem p
+JOIN temptable t ON p.pid = t.pid
+SET p.title = t.title;
 
 ## 数据表说明
 
 导入数据:
 
 ```sql
-LOAD DATA LOCAL INFILE 'data/solution.csv'
-     INTO TABLE solution
+LOAD DATA LOCAL INFILE 'data/data/problem.csv'
+     INTO TABLE temptable
      FIELDS TERMINATED BY ',' 
      ENCLOSED BY '"'
      LINES TERMINATED BY '\n'
@@ -68,11 +75,11 @@ LOAD DATA LOCAL INFILE 'data/solution.csv'
 
 ```sql
 SELECT * 
-INTO OUTFILE '../data/user.csv'
+INTO OUTFILE '/var/lib/mysql-files/course.csv'
 FIELDS TERMINATED BY ',' 
 ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
-FROM user;
+FROM course;
 ```
 
 由于生数据存在一些冗余列, 所以对生数据进行了缩减, 只保留有效列

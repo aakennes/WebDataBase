@@ -60,6 +60,55 @@ app.get('/api/courses', (req, res) => {
     });
   });
 
+  app.get("/api/get-team-members", (req, res) => {
+    const { cid, page } = req.query;
+
+    if (!cid) {
+      return res.status(400).send("课程 ID 缺失");
+    }
+
+    const offset = (page - 1) * 20; // 分页计算偏移量
+
+    const query = `
+        SELECT u.uid, u.nickname, u.color
+        FROM user AS u
+        JOIN course_user AS cu ON u.uid = cu.uid
+        WHERE cu.cid = ? AND u.author = 0
+        LIMIT ?, 20
+    `;
+    console.log(query);
+
+    db.query(query, [cid, offset], (err, results) => {
+      if (err) {
+        console.error("数据库查询错误:", err);
+        return res.status(500).send("服务器错误");
+      }
+
+      res.json(results);
+    });
+  });
+  app.get("/api/get-team-authors", (req, res) => {
+    const { cid } = req.query;
+
+    if (!cid) {
+      return res.status(400).send("课程 ID 缺失");
+    }
+
+    const query = `
+        SELECT u.uid, u.nickname, u.color
+        FROM user AS u
+        WHERE u.author = 1
+    `;
+
+    db.query(query, [cid], (err, results) => {
+      if (err) {
+        console.error("数据库查询错误:", err);
+        return res.status(500).send("服务器错误");
+      }
+      console.log("查询结果:", JSON.stringify(results, null, 2));
+      res.json(results);
+    });
+  });
 
 
 // API 路由：获取课程详情

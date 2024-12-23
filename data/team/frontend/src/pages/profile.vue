@@ -96,7 +96,7 @@
 import axios from "axios";
 export default {
   name: "ProfilePage",
-  props: ["uid"],
+  props: ["uid", "profileid"],
   data() {
     return {
       userInfo: {
@@ -119,7 +119,7 @@ export default {
         try {
           const response = await axios.post("http://localhost:3000/api/messages", {
             from_uid: this.uid,
-            to_uid: this.uid, // 留言发送给自己
+            to_uid: this.profileid, // 留言发送给自己
             text: this.newMessage.trim(),
           });
           if (response.data.success) {
@@ -137,7 +137,7 @@ export default {
     async fetchUserInfo() {
       try {
         const response = await axios.get("http://localhost:3000/api/user-info", {
-          params: { uid: this.uid },
+          params: { uid: this.profileid },
         });
         if (response.data) {
           this.userInfo = { ...response.data };
@@ -150,7 +150,7 @@ export default {
     async fetchRecentSubmissions() {
       try {
         const response = await axios.get("http://localhost:3000/api/user-info-solutions", {
-          params: { uid: this.uid },
+          params: { uid: this.profileid },
         });
         if (response.data) {
           this.recentSubmissions = response.data;
@@ -163,7 +163,7 @@ export default {
     async fetchMessages() {
       try {
         const response = await axios.get("http://localhost:3000/api/messages", {
-          params: { uid: this.uid },
+          params: { uid: this.profileid },
         });
         if (response.data) {
           this.messages = response.data;
