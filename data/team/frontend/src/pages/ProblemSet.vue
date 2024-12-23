@@ -42,7 +42,7 @@
 <script>
   export default {
   name: "ProblemSet",
-  props: ["cid"], // 从父组件或 URL 中传递课程 ID (cid)
+  props: ["cid", 'uid'], // 从父组件或 URL 中传递课程 ID (cid)
   data() {
     return {
       course: {}, // 初始化课程信息为空对象
@@ -89,7 +89,8 @@
 
     // 跳转到问题详情页面
     goToProblem(psid) {
-      window.location.href = `Problem.html?psid=${psid}`;
+      
+      window.location.href = `Problem.html?uid=${this.uid}&psid=${psid}`;
     }
 
   }
