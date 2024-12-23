@@ -6,8 +6,8 @@
       <h3>我的课程</h3>
       <div class="courses-grid">
         <div v-for="course in courses" :key="course.cid" class="card">
-          <a :href="`ProblemSet.html?cid=${course.cid}`" class="title">{{ course.title }}</a>
-          <a :href="`ProblemSet.html?cid=${course.cid}`" class="description">{{ course.description }}</a>
+          <a :href="`ProblemSet.html?uid=${uid}&cid=${course.cid}`" class="title">{{ course.title }}</a>
+          <a :href="`ProblemSet.html?uid=${uid}&cid=${course.cid}`" class="description">{{ course.description }}</a>
           <button v-if="course.status === '未加入'" class="btn btn-primary">加入课程</button>
           <p v-else>已加入</p>
         </div>
