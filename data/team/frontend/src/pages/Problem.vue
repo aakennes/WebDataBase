@@ -6,16 +6,16 @@
     </div>
     <div v-if="problem">
       <ul class="problem-details">
-        <li><strong>题目名：</strong> {{ problem.title }}</li>
-        <li><strong>编号：</strong> {{ problem.pid }}</li>
-        <li><strong>时间限制：</strong> {{ problem.time_limit }} ms</li>
-        <li><strong>空间限制：</strong> {{ problem.memory_limit }} KiB</li>
-        <li><strong>完成状态：</strong>
+        <li><strong>题目名：</strong> {{ problem[0].title }}</li>
+        <li><strong>编号：</strong> {{ problem[0].pid }}</li>
+        <li><strong>时间限制：</strong> {{ problem[0].time_limit }} ms</li>
+        <li><strong>空间限制：</strong> {{ problem[0].memory_limit }} KiB</li>
+        <li><strong>最高分：</strong>
           <span :class="{'status-success': problem.status === '已通过', 'status-failed': problem.status !== '已通过'}">
-            {{ problem.status }}
+            {{ problem[0].status }}
           </span>
         </li>
-        <li><strong>通过率：</strong> {{ problem.submit_ac }} / {{ problem.submit_all }}</li>
+        <li><strong>通过率：</strong> {{ problem[0].submit_ac }} / {{ problem[0].submit_all }}</li>
         <li><strong>评测全部测试点：</strong> 是</li>
         <li><strong>Special Judge：</strong> 未启用</li>
       </ul>
@@ -32,9 +32,10 @@
       </button>
     </div>
   </div>
+  
 </template>
   
-  <script>
+<script>
   export default {
     name: 'ProblemPage',
     props: ["psid"], // 从父组件或 URL 中传递课程 ID (cid)
@@ -75,7 +76,7 @@
       },
     },
   };
-  </script>
+</script>
   
   <style scoped>
 .container {
@@ -133,7 +134,7 @@
 .submit-problem-btn,
 .view-record-btn {
   padding: 10px 0;
-  border: 2px solid transparent;
+  border: 1.5px solid transparent;
   border-radius: 8px;
   font-size: 18px;
   font-weight: bold;
