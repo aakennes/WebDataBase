@@ -18,6 +18,7 @@ use app\models\ContactForm;
 use app\models\Problem;
 use app\models\ProblemMaintainer;
 use app\models\Solution;
+use app\models\ProblemsetUser;
 
 class SiteController extends Controller
 {
@@ -70,6 +71,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        //$uid = Yii::$app->user->id;
         $uid = 4; // 假设通过登录用户的 UID 获取
 
         // 查询该用户创建的最新题目的 pid
@@ -188,9 +190,91 @@ class SiteController extends Controller
         ]);
     }
 
+
     public function actionIndex2()
-    {
-        return $this->render('index2'); // 渲染 views/site/index2.php
+    {   
+        $psid = 81;
+        $allstu = 0;
+        $psid = 81;
+        $allstu = ProblemsetUser::find()
+            ->where(['psid' => $psid])
+            ->count(); // 计算满足条件的记录总数
+        
+            
+        // 找到所有 pid
+        $pids = Problem::find()
+            ->select('pid')
+            ->where(['psid' => $psid])
+            ->column();
+            
+        // 查询 solution 表中对应 pid 的记录数
+        $totalSubmissions = Solution::find()
+            ->where(['pid' => $pids])
+            ->count();
+        
+        // 查询 solution 表中唯一的 uid 数量        
+        $sql = "
+            SELECT COUNT(DISTINCT uid) AS total_users
+            FROM solution
+            WHERE pid IN (
+                SELECT pid
+                FROM problem
+                WHERE psid = :psid
+            )
+        ";
+        
+        $totalUsers = Yii::$app->db->createCommand($sql, [':psid' => $psid])->queryScalar();
+
+
+        //总正确率
+        $correctSubmissions = Solution::find()
+            ->where(['pid' => $pids, 'score' => 100])
+            ->count();
+        
+        $accuracy = round(($correctSubmissions / $totalSubmissions)*100);
+
+        // 每日提交情况
+        // 查询有提交记录的最近 7 天数据并按日期分组
+        $results = Solution::find()
+            ->select([
+                'submission_date' => 'DATE(`when`)',  // 提交日期
+                'total_submissions' => 'COUNT(*)', // 总提交次数
+                'passed_submissions' => 'SUM(CASE WHEN score = 100 THEN 1 ELSE 0 END)', // 通过次数
+            ])
+            ->where(['pid' => $pids])
+            ->groupBy(['submission_date'])
+            ->orderBy(['submission_date' => SORT_DESC]) // 按日期倒序排列
+            ->limit(7) // 只取最近 7 天有提交记录的数据
+            ->asArray()        // 返回数组形式
+            ->all();
+        
+            // 构造每天的提交次数数组和通过次数数组
+            $dates = [];
+            $totalSubmissions_day = [];
+            $passedSubmissions_day = [];
+        
+            // 填充结果
+            foreach ($results as $result) {
+                $dates[] = $result['submission_date'];
+                $totalSubmissions_day[] = $result['total_submissions'];
+                $passedSubmissions_day[] = $result['passed_submissions'];
+            }
+        
+            // 按日期升序排序（因为查询结果是倒序）
+            $dates = array_reverse($dates);
+            $totalSubmissions_day = array_reverse($totalSubmissions_day);
+            $passedSubmissions_day = array_reverse($passedSubmissions_day);
+
+        return $this->render('index2', [
+            'allstu' => $allstu,
+            'totalSubmissions' => $totalSubmissions,
+            'totalUsers' => $totalUsers,
+            'accuracy' => $accuracy,
+            'dates' => $dates,
+            'total_submissions' => $totalSubmissions_day,
+            'passed_submissions' => $passedSubmissions_day,
+        
+        ]); // 渲染 views/site/index2.php
     }
 
     public function actionIndex3()

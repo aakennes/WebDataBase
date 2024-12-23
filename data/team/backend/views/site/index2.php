@@ -106,24 +106,24 @@
                     <div class="row">
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box"> <span class="info-box-icon text-bg-primary shadow-sm"> <i class="bi bi-gear-fill"></i> </span>
-                                <div class="info-box-content"> <span class="info-box-text">CPU Traffic</span> <span class="info-box-number">
-                                        10
+                                <div class="info-box-content"> <span class="info-box-text">总正确率</span> <span class="info-box-number">
+                                        <?= $accuracy ?>
                                         <small>%</small> </span> </div> <!-- /.info-box-content -->
                             </div> <!-- /.info-box -->
                         </div> <!-- /.col -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box"> <span class="info-box-icon text-bg-danger shadow-sm"> <i class="bi bi-hand-thumbs-up-fill"></i> </span>
-                                <div class="info-box-content"> <span class="info-box-text">Likes</span> <span class="info-box-number">41,410</span> </div> <!-- /.info-box-content -->
+                                <div class="info-box-content"> <span class="info-box-text">提交次数</span> <span class="info-box-number"><?= $totalSubmissions ?></span> </div> <!-- /.info-box-content -->
                             </div> <!-- /.info-box -->
                         </div> <!-- /.col --> <!-- fix for small devices only --> <!-- <div class="clearfix hidden-md-up"></div> -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box"> <span class="info-box-icon text-bg-success shadow-sm"> <i class="bi bi-cart-fill"></i> </span>
-                                <div class="info-box-content"> <span class="info-box-text">Sales</span> <span class="info-box-number">760</span> </div> <!-- /.info-box-content -->
+                                <div class="info-box-content"> <span class="info-box-text">提交人次</span> <span class="info-box-number"><?= $totalUsers ?></span> </div> <!-- /.info-box-content -->
                             </div> <!-- /.info-box -->
                         </div> <!-- /.col -->
                         <div class="col-12 col-sm-6 col-md-3">
                             <div class="info-box"> <span class="info-box-icon text-bg-warning shadow-sm"> <i class="bi bi-people-fill"></i> </span>
-                                <div class="info-box-content"> <span class="info-box-text">New Members</span> <span class="info-box-number">2,000</span> </div> <!-- /.info-box-content -->
+                                <div class="info-box-content"> <span class="info-box-text">需完成该习题集人数</span> <span class="info-box-number"><?= $allstu ?></span> </div> <!-- /.info-box-content -->
                             </div> <!-- /.info-box -->
                         </div> <!-- /.col -->
                     </div> <!-- /.row --> <!--begin::Row-->
@@ -131,7 +131,7 @@
                         <div class="col-md-12">
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <h5 class="card-title">Monthly Recap Report</h5>
+                                    <h5 class="card-title">该习题集习题提交情况</h5>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button>
                                         <div class="btn-group"> <button type="button" class="btn btn-tool dropdown-toggle" data-bs-toggle="dropdown"> <i class="bi bi-wrench"></i> </button>
                                             <div class="dropdown-menu dropdown-menu-end" role="menu"> <a href="#" class="dropdown-item">Action</a> <a href="#" class="dropdown-item">Another action</a> <a href="#" class="dropdown-item">
@@ -143,7 +143,7 @@
                                 <div class="card-body"> <!--begin::Row-->
                                     <div class="row">
                                         <div class="col-md-8">
-                                            <p class="text-center"> <strong>Sales: 1 Jan, 2023 - 30 Jul, 2023</strong> </p>
+                                            <p class="text-center"> <strong>记录周期:  <?= $dates[0] ?> - <?= $dates[6] ?></strong> </p>
                                             <div id="sales-chart"></div>
                                         </div> <!-- /.col -->
                                         <div class="col-md-4">
@@ -322,14 +322,13 @@
 
         const sales_chart_options = {
             series: [{
-                    name: "Digital Goods",
-                    data: [28, 48, 40, 19, 86, 27, 90],
-                },
-                {
-                    name: "Electronics",
-                    data: [65, 59, 80, 81, 56, 55, 40],
-                },
-            ],
+                name: "提交次数",
+                data: <?= json_encode($total_submissions, JSON_NUMERIC_CHECK) ?>,
+            },
+            {
+                name: "通过次数",
+                data: <?= json_encode($passed_submissions, JSON_NUMERIC_CHECK) ?>,
+            }],
             chart: {
                 height: 180,
                 type: "area",
@@ -349,15 +348,7 @@
             },
             xaxis: {
                 type: "datetime",
-                categories: [
-                    "2023-01-01",
-                    "2023-02-01",
-                    "2023-03-01",
-                    "2023-04-01",
-                    "2023-05-01",
-                    "2023-06-01",
-                    "2023-07-01",
-                ],
+                categories:  <?= json_encode($dates) ?>,
             },
             tooltip: {
                 x: {
