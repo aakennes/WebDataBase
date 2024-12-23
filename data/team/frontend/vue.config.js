@@ -16,9 +16,9 @@ module.exports = defineConfig({
       filename: 'ProblemSet.html', // 输出的 HTML 文件名
       title: 'Problem Set', // 页面标题
     },
-    problemSet: {
-      entry: 'src/main/profile.js', // 问题集入口文件
-      template: 'public/profile.html', // 问题集 HTML 模板
+    profile: {
+      entry: 'src/main/profile.js', // 个人页面入口文件
+      template: 'public/profile.html', // 个人页面 HTML 模板
       filename: 'profile.html', // 输出的 HTML 文件名
       title: 'Profile Page', // 页面标题
     },

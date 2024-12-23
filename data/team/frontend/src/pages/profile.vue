@@ -1,21 +1,22 @@
 <template>
   <div class="container">
-    <div class="content-wrapper">
+    <div v-if="isLoading" class="loading">
+      <p>加载中，请稍候...</p>
+    </div>
+    <div v-else class="content-wrapper">
       <!-- 用户信息部分 -->
       <div class="profile-info">
-        <div class="avatar">
-          <!-- <img src="https://via.placeholder.com/150" alt="Avatar" /> -->
-          <div class="avatar-img" :style="{ backgroundColor: userInfo.color }">
-            <span>{{ userInfo.nickname[0] }}</span>
+        <div class="avatar-profile">
+          <div class="avatar-profile-img" :style="{ backgroundColor: userInfo.color || '#ccc' }">
+            <span>{{ userInfo.nickname ? userInfo.nickname[0] : 'N/A' }}</span>
           </div>
-
         </div>
         <div class="user-details">
-          <h3>{{ userInfo.nickname }}</h3>
-          <p><strong>Email:</strong> {{ userInfo.email }}</p>
+          <h3>{{ userInfo.nickname || '未知用户' }}</h3>
+          <p><strong>Email:</strong> {{ userInfo.email || '暂无邮箱' }}</p>
           <p>
             <strong>头像颜色:</strong>
-            <span :style="{ color: userInfo.color }">{{ userInfo.color }}</span>
+            <span :style="{ color: userInfo.color || '#ccc' }">{{ userInfo.color || '无' }}</span>
           </p>
           <p><strong>总通过数:</strong> {{ userInfo.acnum }}</p>
           <p><strong>总提交数:</strong> {{ userInfo.allnum }}</p>
@@ -25,7 +26,7 @@
       <!-- 最近提交记录部分 -->
       <div class="recent-submissions">
         <h3>最近提交记录</h3>
-        <table>
+        <table v-if="recentSubmissions.length > 0">
           <thead>
             <tr>
               <th>pid</th>
@@ -47,69 +48,87 @@
             </tr>
           </tbody>
         </table>
+        <p v-else>暂无提交记录</p>
       </div>
-      
     </div>
-    <div class="message-section">
-      <h3>留言功能</h3>
+
+    <!-- 留言功能 -->
+    <div class="message-container">
       <!-- 留言输入框 -->
       <textarea
         v-model="newMessage"
-        placeholder="请输入您的留言"
+        placeholder="评论"
         rows="4"
         class="message-input"
       ></textarea>
-      <!-- 提交按钮 -->
       <button class="submit-button" @click="submitMessage">提交留言</button>
       <!-- 留言列表 -->
-      <ul class="message-list">
-        <li v-for="(message, index) in messages" :key="index">
-          <pre>{{ message }}</pre> <!-- 使用 pre 标签保留换行格式 -->
-        </li>
-      </ul>
+      <div class="message-list">
+        <div v-for="(message, index) in messages" :key="message.umid" class="message-item">
+          <div class="message-header">
+            <div class="avatar">
+              <div class="avatar-img" :style="{ backgroundColor: message.color || '#ccc' }">
+                <span>{{ message.nickname ? message.nickname[0] : 'N/A' }}</span>
+              </div>
+            </div>
+            <div class="message-info">
+              <span class="message-floor">#{{ index + 1 }}</span>
+              <span class="message-author">{{ message.nickname || "匿名" }}</span>
+            </div>
+          </div>
+          <!-- 添加一个留言正文框 -->
+          <div class="message-body-wrapper">
+            <div class="message-body">
+              <p>{{ message.text }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+
 
   </div>
 </template>
 
+
 <script>
-import axios from 'axios';
+import axios from "axios";
 export default {
   name: "ProfilePage",
+  props: ["uid"],
   data() {
     return {
-      // 用户信息
       userInfo: {
-        nickname: "张三",
-        color: "red",
-        email: "zhangsan@example.com",
-        acnum: 120,
-        allnum: 300,
+        nickname: "",
+        color: "",
+        email: "",
+        acnum: 0,
+        allnum: 0,
       },
-      // 最近提交记录
-      recentSubmissions: [
-        { id: 1, problemId: "101", uid: "462913", username: "吴佳璇", title: "二进制转十进制", score: 95 },
-        { id: 2, problemId: "102", uid: "03083", username: "张三", title: "高级语言程序设计", score: 88 },
-        { id: 3, problemId: "103", uid: "462914", username: "李四", title: "计算机网络", score: 100 },
-        { id: 4, problemId: "104", uid: "05085", username: "王五", title: "编译原理", score: 72 },
-        { id: 5, problemId: "105", uid: "462915", username: "赵六", title: "数据库", score: 56 },
-        { id: 6, problemId: "105", uid: "462915", username: "赵六", title: "数据库", score: 56 },
-        { id: 7, problemId: "105", uid: "462915", username: "赵六", title: "数据库", score: 56 },
-      ],
-      // 留言功能
+      recentSubmissions: [],
+      isLoading: true,
       newMessage: "", // 存储新留言内容
       messages: [], // 存储所有留言
     };
   },
   methods: {
     // 提交留言
-    submitMessage() {
+    async submitMessage() {
       if (this.newMessage.trim()) {
-        const nickname = this.userInfo?.nickname || "匿名"; // 使用用户昵称或默认值
-        const messageContent = `${nickname}:
-            ${this.newMessage.trim()}`; // 拼接昵称和留言内容，支持换行
-        this.messages.push(messageContent); // 添加到留言列表
-        this.newMessage = ""; // 清空输入框
+        try {
+          const response = await axios.post("http://localhost:3000/api/messages", {
+            from_uid: this.uid,
+            to_uid: this.uid, // 留言发送给自己
+            text: this.newMessage.trim(),
+          });
+          if (response.data.success) {
+            this.newMessage = ""; // 清空输入框
+            await this.fetchMessages(); // 重新获取留言列表
+          }
+        } catch (error) {
+          console.error("提交留言失败:", error);
+        }
       } else {
         alert("留言不能为空！");
       }
@@ -121,7 +140,7 @@ export default {
           params: { uid: this.uid },
         });
         if (response.data) {
-          this.userInfo = response.data;
+          this.userInfo = { ...response.data };
         }
       } catch (error) {
         console.error("加载用户信息失败:", error);
@@ -130,7 +149,7 @@ export default {
     // 获取最近提交记录
     async fetchRecentSubmissions() {
       try {
-        const response = await axios.get("http://localhost:3000/api/user-info-solutions?", {
+        const response = await axios.get("http://localhost:3000/api/user-info-solutions", {
           params: { uid: this.uid },
         });
         if (response.data) {
@@ -140,14 +159,32 @@ export default {
         console.error("加载最近提交记录失败:", error);
       }
     },
-    
+    // 获取所有留言
+    async fetchMessages() {
+      try {
+        const response = await axios.get("http://localhost:3000/api/messages", {
+          params: { uid: this.uid },
+        });
+        if (response.data) {
+          this.messages = response.data;
+        }
+      } catch (error) {
+        console.error("加载留言失败:", error);
+      }
+    },
   },
-  created() {
-    this.fetchUserInfo();
-    this.fetchRecentSubmissions();
+  async created() {
+    try {
+      await Promise.all([this.fetchUserInfo(), this.fetchRecentSubmissions(), this.fetchMessages()]);
+    } catch (error) {
+      console.error("加载数据时发生错误:", error);
+    } finally {
+      this.isLoading = false;
+    }
   },
 };
 </script>
+
 
 
 <style scoped>
@@ -177,7 +214,7 @@ export default {
   border-radius: 8px;
   padding: 20px;
 }
-.avatar {
+.avatar-profile {
   margin-left: 0px;
   margin-top: 30px;
 }
@@ -188,7 +225,7 @@ export default {
   margin-bottom: 20px;
 } */
 
-.avatar-img {
+.avatar-profile-img {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -269,57 +306,128 @@ th {
   color: red;
 }
 
-.message-section {
-  margin-top: 20px;
+/* 留言容器样式 */
+.message-container {
+  background: #f9f9f9; /* 背景颜色 */
+  border-radius: 10px; /* 圆角 */
   padding: 20px;
-  background-color: #fffcfc;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+  margin-top: 20px;
 }
 
-.message-section h3 {
-  font-size: 20px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
+/* 留言输入框样式 */
 .message-input {
   width: 100%;
   padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 5px;
   margin-bottom: 10px;
   font-size: 14px;
-  font-family: Arial, sans-serif;
 }
 
+/* 提交按钮样式 */
 .submit-button {
   display: inline-block;
-  background-color: #b63796;
-  color: #fff;
+  background: linear-gradient(120deg, #ab31e4, #e431bd); /* 按钮渐变色 */
+  color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
   font-size: 14px;
+  font-weight: bold;
 }
 
 .submit-button:hover {
-  background-color: #45a049;
+  background: linear-gradient(120deg, #7e24a8, #ad138b); /* 按钮渐变色反转 */
 }
 
+/* 留言列表样式 */
 .message-list {
-  list-style: none;
+  margin-top: 10px;
   padding: 0;
-  margin: 0;
 }
 
-.message-list li {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  margin-top: 10px;
-  padding: 10px;
+/* 留言单条样式 */
+.message-item {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column; /* 修改为垂直排列 */
+  align-items: flex-start;
 }
+
+.message-body-wrapper {
+  border: 1px solid #ddd; /* 边框颜色 */
+  border-radius: 5px; /* 圆角 */
+  padding: 10px;
+  margin-top: 10px;
+  background: #f9f9f9; /* 背景色 */
+  width: 100%; /* 宽度填充父容器 */
+}
+.message-body {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  word-wrap: break-word; /* 自动换行 */
+  white-space: pre-wrap; /* 保留换行 */
+}
+
+/* 头像样式 */
+.avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 15px;
+}
+
+.avatar-img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+/* 留言头部样式 */
+.message-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.message-floor {
+  font-size: 12px;
+  color: #888;
+  margin-right: 10px;
+}
+
+.message-author {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 留言内容样式 */
+.message-body {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+  word-wrap: break-word; /* 自动换行 */
+  white-space: pre-wrap; /* 保留换行 */
+}
+
+
 
 </style>
