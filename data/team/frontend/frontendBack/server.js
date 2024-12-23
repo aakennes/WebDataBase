@@ -59,33 +59,6 @@ app.get('/api/courses', (req, res) => {
   });
 
 
-// // 模拟数据
-// const data = {
-//   courses: [
-//     { id: 1, name: "高级语言程序设计", status: "未加入" },
-//     { id: 2, name: "数据结构", status: "已加入" },
-//     { id: 3, name: "操作系统", status: "未加入" },
-//     { id: 4, name: "计算机网络", status: "已加入" },
-//     { id: 5, name: "人工智能", status: "未加入" },
-//     { id: 6, name: "编译原理", status: "未加入" },
-//     { id: 7, name: "并行程序设计", status: "未加入" }
-//   ],
-//   exams: [
-//     { id: 1, type: "考试", name: "高级语言程序设计2-2上机考试", time: "2023/6/8 17:14:59" },
-//     { id: 2, type: "考试", name: "高级语言程序设计2-1上机考试", time: "2023/2/25 21:49:59" }
-//   ],
-//   competitions: [
-//     { id: 1, type: "竞赛", name: "NKPC19-现场赛", time: "2023/4/22 16:59:59" },
-//     { id: 2, type: "竞赛", name: "NKPC19-网络赛", time: "2023/4/19 18:59:59" }
-//   ]
-// };
-
-// // API 路由：获取数据
-// app.get('/api/data', (req, res) => {
-//   res.json(data); // 返回 JSON 数据
-// });
-
-
 // 根路由：返回包含当前数据的 HTML 页面
 app.get('/', (req, res) => {
     // 查询数据库获取所有课程数据
@@ -125,6 +98,127 @@ app.get('/', (req, res) => {
       res.send(html);
     });
 });
+
+
+  
+
+// API 路由：获取课程详情
+app.get('/api/courseInfo', (req, res) => {
+  const { cid } = req.query; // 从请求中获取课程 ID (cid)
+  console.log("确认收到的课程 ID (cid)了啊:", cid); // 打印接收到的 cid
+
+  // 检查是否提供了课程 ID
+  if (!cid) {
+      return res.status(400).send('课程 ID (cid) 是必需的');
+  }
+
+  // 查询课程详情  //"title","description","owner_id","passcode","number"
+  const query = `
+      SELECT 
+          title,
+          description,
+          owner_id,
+          passcode,
+          number
+      FROM 
+          course
+      WHERE 
+          cid = ?
+  `;
+
+  // 执行查询
+  db.execute(query, [cid], (err, results) => {
+      if (err) {
+          console.error('数据库查询失败:', err);
+          return res.status(500).send('数据库查询失败');
+      }
+
+      if (results.length > 0) {
+          res.json(results[0]); // 返回查询结果的第一个课程（因为 cid 是唯一的）
+      } else {
+          res.status(404).send('未找到指定的课程');
+      }
+  });
+});
+
+
+
+
+// 获取习题集信息
+app.get('/api/problemsets', (req, res) => {
+    const { cid } = req.query; // 从请求中获取 cid 参数
+  
+    // 检查是否提供了 cid
+    if (!cid) {
+      return res.status(400).send('cid is required');
+    }
+  
+    // 查询习题集数据
+    const query = `
+      SELECT 
+        psid,         -- 主键
+        title,        -- 习题集标题
+        description   -- 习题集描述
+      FROM 
+        problemset
+      WHERE 
+        cid = ?       -- 根据课程 ID 筛选
+    `;
+  
+    db.execute(query, [cid], (err, results) => {
+      if (err) {
+        return res.status(500).send('Database query failed');
+      }
+  
+      res.json(results); // 返回查询结果
+    });
+  });
+  
+
+
+  
+ // API 路由：根据 psid 获取所有相关的习题信息
+app.get('/api/problem', (req, res) => {
+  const { psid } = req.query; // 从 URL 参数中获取 psid
+
+  // 确保提供了 psid 参数
+  if (!psid) {
+      return res.status(400).send('psid 参数是必须的');
+  }
+
+  // 查询数据库获取与 psid 相关的习题信息
+  const query = `
+      SELECT 
+          pid,
+          psid,
+          title,
+          submit_ac,
+          submit_all,
+          cases,
+          time_limit,
+          memory_limit,
+          owner_id
+      FROM 
+          problem
+      WHERE 
+          psid = ?
+  `;
+
+  db.execute(query, [psid], (err, results) => {
+      if (err) {
+          console.error('查询数据库失败:', err);
+          return res.status(500).send('数据库查询失败');
+      }
+
+      // 如果查询到结果，返回结果；否则返回 404
+      if (results.length > 0) {
+          res.json(results);
+      } else {
+          res.status(404).send('未找到对应的习题');
+      }
+  });
+});
+
 
 // 启动服务器
 app.listen(port, () => {
