@@ -136,11 +136,10 @@ app.post("/api/login", (req, res) => {
                     const portMatch = output.match(/http:\/\/localhost:(\d+)/);
                     if (portMatch && !backendPort) {
                         backendPort = portMatch[1];
-                        console.log(`捕获到后台服务启动端口: ${backendPort}`);
-
+                        // console.log(`捕获到后台服务启动端口: ${backendPort}`);
                         res.json({
                             success: true,
-                            redirectUrl: `http://localhost:${backendPort}/backend?uid=${uid}`
+                            redirectUrl: `http://localhost:${backendPort}?uid=${uid}`
                         });
                     }
                 });
