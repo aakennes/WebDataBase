@@ -43,6 +43,7 @@ node v22.12.0
 在team文件夹中使用以下指令初始化并运行:
 
 ```bash
+sudo chmod 1733 /var/lib/php/sessions
 cd frontend
 npm install
 cd ../login
