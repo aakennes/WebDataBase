@@ -3,6 +3,8 @@
 * Team: 
 * Coding by Cai Yuanhong 2213897; Huang Mingzhou 2211804; 20241221 
 */
+use yii\helpers\Html;
+use yii\helpers\Json; 
 ?>
 
 <!DOCTYPE html>
@@ -201,83 +203,40 @@
                             
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Latest Orders</h3>
+                                    <h3 class="card-title">该习题集最近提交记录</h3>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
                                 </div> <!-- /.card-header -->
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
-                                        <table class="table m-0">
+                                        <table class="table table-striped table-bordered table-hover text-center m-0">
                                             <thead>
                                                 <tr>
-                                                    <th>Order ID</th>
-                                                    <th>Item</th>
-                                                    <th>Status</th>
-                                                    <th>Popularity</th>
+                                                    <th>PID</th>
+                                                    <th>UID</th>
+                                                    <th>Score</th>
+                                                    <th>SubmissionTime</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR9842</a> </td>
-                                                    <td>Call of Duty IV</td>
-                                                    <td> <span class="badge text-bg-success">
-                                                            Shipped
-                                                        </span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-1"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR1848</a> </td>
-                                                    <td>Samsung Smart TV</td>
-                                                    <td> <span class="badge text-bg-warning">Pending</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-2"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a> </td>
-                                                    <td>iPhone 6 Plus</td>
-                                                    <td> <span class="badge text-bg-danger">
-                                                            Delivered
-                                                        </span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-3"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a> </td>
-                                                    <td>Samsung Smart TV</td>
-                                                    <td> <span class="badge text-bg-info">Processing</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-4"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR1848</a> </td>
-                                                    <td>Samsung Smart TV</td>
-                                                    <td> <span class="badge text-bg-warning">Pending</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-5"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR7429</a> </td>
-                                                    <td>iPhone 6 Plus</td>
-                                                    <td> <span class="badge text-bg-danger">
-                                                            Delivered
-                                                        </span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-6"></div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td> <a href="pages/examples/invoice.html" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">OR9842</a> </td>
-                                                    <td>Call of Duty IV</td>
-                                                    <td> <span class="badge text-bg-success">Shipped</span> </td>
-                                                    <td>
-                                                        <div id="table-sparkline-7"></div>
-                                                    </td>
-                                                </tr>
+                                                <?php foreach ($submissionData as $data): ?>
+                                                    <tr>
+                                                        <td> <?= Html::encode($data->pid) ?></td>
+                                                        <td> <?= Html::encode($data->uid) ?> </td>
+                                                        <td>
+                                                            <?php 
+                                                                $score = $data->score;
+                                                                if ($score == 100) {
+                                                                    echo "<span class='badge text-bg-success'>{$score}</span>";
+                                                                } elseif ($score >= 60 && $score < 100) {
+                                                                    echo "<span class='badge text-bg-warning'>{$score}</span>";
+                                                                } else {
+                                                                    echo "<span class='badge text-bg-danger'>{$score}</span>";
+                                                                }
+                                                            ?>
+                                                        </td>
+                                                        <td> <?= Yii::$app->formatter->asDatetime($data->when) ?> <!-- 提交时间 --> </td>
+                                                    </tr>                                                    
+                                                <?php endforeach; ?>
                                             </tbody>
                                         </table>
                                     </div> <!-- /.table-responsive -->
@@ -289,7 +248,7 @@
                             
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <h3 class="card-title">Browser Usage</h3>
+                                    <h3 class="card-title">练习题集</h3>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
                                 </div> <!-- /.card-header -->
                                 <div class="card-body"> <!--begin::Row-->
@@ -301,21 +260,20 @@
                                 </div> <!-- /.card-body -->
                                 <div class="card-footer p-0">
                                     <ul class="nav nav-pills flex-column">
-                                        <li class="nav-item"> <a href="#" class="nav-link">
-                                                United States of America
-                                                <span class="float-end text-danger"> <i class="bi bi-arrow-down fs-7"></i>
-                                                    12%
-                                                </span> </a> </li>
-                                        <li class="nav-item"> <a href="#" class="nav-link">
-                                                India
-                                                <span class="float-end text-success"> <i class="bi bi-arrow-up fs-7"></i> 4%
-                                                </span> </a> </li>
-                                        <li class="nav-item"> <a href="#" class="nav-link">
-                                                China
-                                                <span class="float-end text-info"> <i class="bi bi-arrow-left fs-7"></i> 0%
-                                                </span> </a> </li>
+                                        <?php foreach ($problemSets as $problemSet): ?>
+                                            <li class="nav-item">
+                                                <a href="#" class="nav-link" 
+                                                onclick="location.href='<?= \yii\helpers\Url::to(['site/index2', 'psid' => $problemSet->psid]) ?>'">
+                                                    <?= Html::encode($problemSet->title) ?> <!-- 显示习题集标题 -->
+                                                    <span class="float-end">
+                                                        <i class="bi bi-arrow-right fs-7"></i>
+                                                    </span>
+                                                    <p class="small"><?= Html::encode($problemSet->description) ?></p> <!-- 显示描述 -->
+                                                </a>
+                                            </li>
+                                        <?php endforeach; ?>
                                     </ul>
-                                </div> <!-- /.footer -->
+                                </div>
                             </div> <!-- /.card --> <!-- PRODUCT LIST -->
                             
                         </div> <!-- /.col -->
@@ -335,7 +293,7 @@
         // - MONTHLY SALES CHART -
         //-----------------------
 
-        const sales_chart_options = {
+        const submission_situation = {
             series: [{
                 name: "提交次数",
                 data: <?= json_encode($total_submissions, JSON_NUMERIC_CHECK) ?>,
@@ -372,97 +330,23 @@
             },
         };
 
-        const sales_chart = new ApexCharts(
+        const submission_chart = new ApexCharts(
             document.querySelector("#sales-chart"),
-            sales_chart_options,
+            submission_situation,
         );
-        sales_chart.render();
+        submission_chart.render();
 
-        //---------------------------
-        // - END MONTHLY SALES CHART -
-        //---------------------------
-
-        function createSparklineChart(selector, data) {
-            const options = {
-                series: [{
-                    data
-                }],
-                chart: {
-                    type: "line",
-                    width: 150,
-                    height: 30,
-                    sparkline: {
-                        enabled: true,
-                    },
-                },
-                colors: ["var(--bs-primary)"],
-                stroke: {
-                    width: 2,
-                },
-                tooltip: {
-                    fixed: {
-                        enabled: false,
-                    },
-                    x: {
-                        show: false,
-                    },
-                    y: {
-                        title: {
-                            formatter: function(seriesName) {
-                                return "";
-                            },
-                        },
-                    },
-                    marker: {
-                        show: false,
-                    },
-                },
-            };
-
-            const chart = new ApexCharts(document.querySelector(selector), options);
-            chart.render();
-        }
-
-        const table_sparkline_1_data = [
-            25, 66, 41, 89, 63, 25, 44, 12, 36, 9, 54,
-        ];
-        const table_sparkline_2_data = [
-            12, 56, 21, 39, 73, 45, 64, 52, 36, 59, 44,
-        ];
-        const table_sparkline_3_data = [
-            15, 46, 21, 59, 33, 15, 34, 42, 56, 19, 64,
-        ];
-        const table_sparkline_4_data = [
-            30, 56, 31, 69, 43, 35, 24, 32, 46, 29, 64,
-        ];
-        const table_sparkline_5_data = [
-            20, 76, 51, 79, 53, 35, 54, 22, 36, 49, 64,
-        ];
-        const table_sparkline_6_data = [
-            5, 36, 11, 69, 23, 15, 14, 42, 26, 19, 44,
-        ];
-        const table_sparkline_7_data = [
-            12, 56, 21, 39, 73, 45, 64, 52, 36, 59, 74,
-        ];
-
-        createSparklineChart("#table-sparkline-1", table_sparkline_1_data);
-        createSparklineChart("#table-sparkline-2", table_sparkline_2_data);
-        createSparklineChart("#table-sparkline-3", table_sparkline_3_data);
-        createSparklineChart("#table-sparkline-4", table_sparkline_4_data);
-        createSparklineChart("#table-sparkline-5", table_sparkline_5_data);
-        createSparklineChart("#table-sparkline-6", table_sparkline_6_data);
-        createSparklineChart("#table-sparkline-7", table_sparkline_7_data);
 
         //-------------
         // - PIE CHART -
         //-------------
 
-        const pie_chart_options = {
-            series: [700, 500, 400, 600, 300, 100],
+        const completion_situation = {
+            series:<?= json_encode($scoreRanges, JSON_NUMERIC_CHECK) ?>,
             chart: {
                 type: "donut",
             },
-            labels: ["Chrome", "Edge", "FireFox", "Safari", "Opera", "IE"],
+            labels: ["100", "90-99", "80-89", "70-79", "60-69", "<60"],
             dataLabels: {
                 enabled: false,
             },
@@ -478,7 +362,7 @@
 
         const pie_chart = new ApexCharts(
             document.querySelector("#pie-chart"),
-            pie_chart_options,
+            completion_situation,
         );
         pie_chart.render();
 

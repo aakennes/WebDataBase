@@ -295,7 +295,7 @@ use yii\helpers\Html;
             tooltip: {
                 y: {
                     formatter: function (val) {
-                        return "$ " + val + " thousands";
+                        return "$ " + val + " 人";
                     },
                 },
             },

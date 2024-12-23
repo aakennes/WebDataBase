@@ -130,7 +130,7 @@ export default {
     // 获取最近提交记录
     async fetchRecentSubmissions() {
       try {
-        const response = await axios.get("http://localhost:3000/api/courses", {
+        const response = await axios.get("http://localhost:3000/api/user-info-solutions?", {
           params: { uid: this.uid },
         });
         if (response.data) {

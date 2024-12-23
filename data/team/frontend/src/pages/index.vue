@@ -61,7 +61,7 @@
   <style scoped>
 .container {
   background-color: #f8f9fa;
-  margin: 60px auto;
+  margin: 120px auto;
   max-width: 1000px;
   padding: 30px; 
   border-radius: 10px;
