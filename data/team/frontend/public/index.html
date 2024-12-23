@@ -59,8 +59,10 @@
                       <!-- ***** Menu Start ***** -->
                       <ul class="nav">
                           <!-- <li class="scroll-to-section"><a href="#top" class="active">Home</a></li> -->
-                          <li class="scroll-to-section"><a href="index.html">课程</a></li>
-                          <li class="scroll-to-section"><a href="solution.html">提交记录</a></li>
+                          <!-- <li class="scroll-to-section"><a href=index.html${uid}>课程</a></li>
+                          <li class="scroll-to-section"><a href="solution.html">提交记录</a></li> -->
+                          <li class="scroll-to-section"><a id="courses-link" href="index.html">课程</a></li>
+                          <li class="scroll-to-section"><a id="solution-link" href="solution.html">提交记录</a></li>
                           <!-- <li class="scroll-to-section"><a href="#kids">Kid's</a></li> -->
                           <!-- <li class="submenu">
                               <a href="javascript:;">Pages</a>
@@ -84,7 +86,7 @@
 
                            <!-- ***** Avatar Start ***** -->
                             <li class="avatar">
-                            <a href="profile.html">
+                            <a id="profile-link" href="profile.html">
                                 <img src="assets/images/header_test.png" alt="Avatar" class="avatar-img" id="user-avatar">
                             </a>
                             </li>
@@ -109,122 +111,9 @@
   <!-- ***** Header Area End ***** -->
 
   
-    <h1>mainbanner前出来了出来了</h1>
+    <!-- <h1>mainbanner前出来了出来了</h1> -->
 
     <!-- 手画的纯静态页面 -->
-      
-
-  <!-- ***** Main Banner Area Start ***** -->
-  <!-- <div class="main-banner" id="top">
-      <div class="container-fluid">
-          <div class="row">
-              <div class="col-lg-6">
-                  <div class="left-content">
-                      <div class="thumb">
-                          <div class="inner-content">
-                              <h4>We Are Hexashop</h4>
-                              <span>Awesome, clean &amp; creative HTML5 Template</span>
-                              <div class="main-border-button">
-                                  <a href="#">Purchase Now!</a>
-                              </div>
-                          </div>
-                          <img src="assets/images/left-banner-image.jpg" alt="">
-                      </div>
-                  </div>
-              </div>
-              <div class="col-lg-6">
-                  <div class="right-content">
-                      <div class="row">
-                          <div class="col-lg-6">
-                              <div class="right-first-image">
-                                  <div class="thumb">
-                                      <div class="inner-content">
-                                          <h4>Women</h4>
-                                          <span>Best Clothes For Women</span>
-                                      </div>
-                                      <div class="hover-content">
-                                          <div class="inner">
-                                              <h4>Women</h4>
-                                              <p>Lorem ipsum dolor sit amet, conservisii ctetur adipiscing elit incid.</p>
-                                              <div class="main-border-button">
-                                                  <a href="#">Discover More</a>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <img src="assets/images/baner-right-image-01.jpg">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-6">
-                              <div class="right-first-image">
-                                  <div class="thumb">
-                                      <div class="inner-content">
-                                          <h4>Men</h4>
-                                          <span>Best Clothes For Men</span>
-                                      </div>
-                                      <div class="hover-content">
-                                          <div class="inner">
-                                              <h4>Men</h4>
-                                              <p>Lorem ipsum dolor sit amet, conservisii ctetur adipiscing elit incid.</p>
-                                              <div class="main-border-button">
-                                                  <a href="#">Discover More</a>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <img src="assets/images/baner-right-image-02.jpg">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-6">
-                              <div class="right-first-image">
-                                  <div class="thumb">
-                                      <div class="inner-content">
-                                          <h4>Kids</h4>
-                                          <span>Best Clothes For Kids</span>
-                                      </div>
-                                      <div class="hover-content">
-                                          <div class="inner">
-                                              <h4>Kids</h4>
-                                              <p>Lorem ipsum dolor sit amet, conservisii ctetur adipiscing elit incid.</p>
-                                              <div class="main-border-button">
-                                                  <a href="#">Discover More</a>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <img src="assets/images/baner-right-image-03.jpg">
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="col-lg-6">
-                              <div class="right-first-image">
-                                  <div class="thumb">
-                                      <div class="inner-content">
-                                          <h4>Accessories</h4>
-                                          <span>Best Trend Accessories</span>
-                                      </div>
-                                      <div class="hover-content">
-                                          <div class="inner">
-                                              <h4>Accessories</h4>
-                                              <p>Lorem ipsum dolor sit amet, conservisii ctetur adipiscing elit incid.</p>
-                                              <div class="main-border-button">
-                                                  <a href="#">Discover More</a>
-                                              </div>
-                                          </div>
-                                      </div>
-                                      <img src="assets/images/baner-right-image-04.jpg">
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-      </div>
-  </div> -->
-  <!-- ***** Main Banner Area End ***** -->
-
-
- 
 
   <!-- jQuery -->
   <script src="assets/js/jquery-2.1.0.min.js"></script>
@@ -249,60 +138,59 @@
   <script src="assets/js/custom.js"></script>
 
 
-  <script>
+   <script>
+      $(function() {
+         var selectedClass = "";
+         $("p").click(function() {
+            selectedClass = $(this).attr("data-rel");
+            $("#portfolio").fadeTo(50, 0.1);
+            $("#portfolio div").not("." + selectedClass).fadeOut();
+            setTimeout(function() {
+                  $("." + selectedClass).fadeIn();
+                  $("#portfolio").fadeTo(50, 1);
+            }, 500);
+         });
+      });
 
-    $(function() {
-        var selectedClass = "";
-        $("p").click(function(){
-        selectedClass = $(this).attr("data-rel");
-        $("#portfolio").fadeTo(50, 0.1);
-            $("#portfolio div").not("."+selectedClass).fadeOut();
-        setTimeout(function() {
-          $("."+selectedClass).fadeIn();
-          $("#portfolio").fadeTo(50, 1);
-        }, 500);
-            
-        });
-    });
+      // 假设这是用户登录时获取的头像 URL
+      var userAvatarUrl = "assets/images/header_test.png";
 
-
-    // 假设这是用户登录时获取的头像 URL
-    var userAvatarUrl = "assets/images/header_test.png";
-
-    // 在页面加载时动态设置头像图片
-    document.addEventListener("DOMContentLoaded", function() {
-        var avatarImg = document.getElementById("user-avatar");
-        if (avatarImg) {
+      // 在页面加载时动态设置头像图片
+      document.addEventListener("DOMContentLoaded", function() {
+         var avatarImg = document.getElementById("user-avatar");
+         if (avatarImg) {
             avatarImg.src = userAvatarUrl;
-        }
-    });
+         }
+      });
 
-        // 获取 URL 参数中的 uid
-        const urlParams = new URLSearchParams(window.location.search);
-        const uid = urlParams.get('uid');
-        if(uid){
-            window.uid = uid;
-        }
-        else{
-            window.uid = 12;
-        }
+      // 获取 URL 参数中的 uid
+      const urlParams = new URLSearchParams(window.location.search);
+      const uid = urlParams.get('uid');
+      if (uid) {
+         window.uid = uid;
+      } else {
+         window.uid = 12; // 默认值
+      }
 
-        console.log("uid?????????????????:", window.uid);
+      console.log("uid?????????????????:", window.uid);
 
-        // 根据 uid 获取用户名并显示
-        if (uid) {
-                fetch(`/api/username?uid=${uid}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        var usernameElement = document.getElementById("username");
-                        if (usernameElement) {
-                            usernameElement.textContent = "欢迎, " + data.username;
-                        }
-                    });
-            }
+      // 动态更新链接的 href 属性，附加 uid 参数
+      document.addEventListener("DOMContentLoaded", function() {
+         const coursesLink = document.getElementById("courses-link");
+         const solutionLink = document.getElementById("solution-link");
+         const profileLink = document.getElementById("profile-link");
 
-
-</script>
+         if (coursesLink) {
+            coursesLink.href = `index.html?uid=${window.uid}`;
+         }
+         if (solutionLink) {
+            solutionLink.href = `solution.html?uid=${window.uid}`;
+         }
+         if (profileLink) {
+            profileLink.href = `profile.html?uid=${window.uid}`;
+         }
+      });
+   </script>
   
 <div id="app"></div>
 

@@ -59,8 +59,8 @@
                       <!-- ***** Menu Start ***** -->
                       <ul class="nav">
                           <!-- <li class="scroll-to-section"><a href="#top" class="active">Home</a></li> -->
-                          <li class="scroll-to-section"><a href="index.html">课程</a></li>
-                          <li class="scroll-to-section"><a href="solution.html">提交记录</a></li>
+                          <li class="scroll-to-section"><a id="courses-link" href="index.html">课程</a></li>
+                          <li class="scroll-to-section"><a id="solution-link" href="solution.html">提交记录</a></li>
                           <!-- <li class="submenu">
                               <a href="javascript:;">Pages</a>
                               <ul>
@@ -83,7 +83,7 @@
 
                            <!-- ***** Avatar Start ***** -->
                             <li class="avatar">
-                            <a href="profile.html">
+                            <a id="profile-link" href="profile.html">
                                 <img src="assets/images/header_test.png" alt="Avatar" class="avatar-img" id="user-avatar">
                             </a>
                             </li>
@@ -153,6 +153,28 @@
         var avatarImg = document.getElementById("user-avatar");
         if (avatarImg) {
             avatarImg.src = userAvatarUrl;
+        }
+    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const uid = urlParams.get('uid');
+    if (uid) {
+        window.uid = uid;
+    } else {
+        window.uid = 12; // 默认值
+    }
+    document.addEventListener("DOMContentLoaded", function() {
+        const coursesLink = document.getElementById("courses-link");
+        const solutionLink = document.getElementById("solution-link");
+        const profileLink = document.getElementById("profile-link");
+
+        if (coursesLink) {
+            coursesLink.href = `index.html?uid=${window.uid}`;
+        }
+        if (solutionLink) {
+            solutionLink.href = `solution.html?uid=${window.uid}`;
+        }
+        if (profileLink) {
+            profileLink.href = `profile.html?uid=${window.uid}`;
         }
     });
 
