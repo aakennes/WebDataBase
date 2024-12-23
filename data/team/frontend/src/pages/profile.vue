@@ -218,12 +218,6 @@ export default {
   margin-left: 0px;
   margin-top: 30px;
 }
-/* .avatar img {
-  border-radius: 50%;
-  width: 200px;
-  height: 200px;
-  margin-bottom: 20px;
-} */
 
 .avatar-profile-img {
   display: flex;
