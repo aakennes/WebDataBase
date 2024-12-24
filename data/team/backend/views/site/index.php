@@ -149,22 +149,28 @@
                         <div class="card-body">
                             <!-- 删除操作 -->
                             <div class="form-row">
-                                <div class="col-md-4">
+                            <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="col-md-8">
                                     <label for="delete-problem-id">删除习题（输入习题ID）</label>
                                     <input type="number" class="form-control" id="delete-problem-id" placeholder="习题ID">
-                                    <button class="btn btn-danger mt-2" onclick="deleteProblem()">删除习题</button>
                                 </div>
+                                <button class="btn btn-danger mt-2" onclick="deleteProblem()">删除习题</button>
+                            </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-12"style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="col-md-8">
                                     <label for="delete-psid">删除习题集（输入习题集ID）</label>
                                     <input type="number" class="form-control" id="delete-psid" placeholder="习题集ID">
+                                    </div>
                                     <button class="btn btn-danger mt-2" onclick="deleteProblemSet()">删除习题集</button>
                                 </div>
 
-                                <div class="col-md-4">
+                                <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="col-md-8">
                                     <label for="delete-cid">删除课程（输入课程ID）</label>
                                     <input type="number" class="form-control" id="delete-cid" placeholder="课程ID">
-                                    <button class="btn btn-danger mt-2" onclick="deleteCourse()">删除课程</button>
+                                    </div>
+                                    <button class="btn btn-danger mt-2" onclick="deleteCourse()" >删除课程</button>
                                 </div>
                             </div>
 
@@ -172,7 +178,14 @@
 
                             <!-- 新增操作，明显分隔 -->
                             <div class="form-group">
+                            <div>
                                 <h4 class="card-title">新增习题</h4>
+                                </div>
+                                <div>
+                                <label ></label>
+                                </div>
+                                <label for="add-psid">习题ID (pid)</label>
+                                <input type="number" class="form-control" id="add-pid" placeholder="输入习题ID">
                                 <label for="add-psid">习题集ID (psid)</label>
                                 <input type="number" class="form-control" id="add-psid" placeholder="输入习题集ID">
 
@@ -191,14 +204,24 @@
                                 <label for="add-owner_id">拥有者ID</label>
                                 <input type="number" class="form-control" id="add-owner_id" placeholder="输入拥有者ID">
                                 
-                                <button class="btn btn-success mt-2 " onclick="addProblem()">新增习题</button>
-                                
+                                <button class="btn btn-success mt-2 " onclick="addProblem()" style="float: right;">新增习题</button>
+                                <div>
+                                <label ></label>
+                                </div>
+                                <div>
+                                <label ></label>
+                                </div>
                             </div>
 
                             <hr>
 
                             <div class="form-group">
+                                <div>
                                 <h4 class="card-title">新增习题集</h4>
+                                </div>
+                                <div>
+                                <label ></label>
+                                </div>
                                 <label for="add-psid-set">习题集ID (psid)</label>
                                 <input type="number" class="form-control" id="add-psid-set" placeholder="输入习题集ID">
 
@@ -217,13 +240,22 @@
                                 <label for="add-owner-id-set">拥有者ID</label>
                                 <input type="number" class="form-control" id="add-owner-id-set" placeholder="输入拥有者ID">
 
-                                <button class="btn btn-success mt-2" onclick="addProblemSet()">新增习题集</button>
+                                <button class="btn btn-success mt-2" onclick="addProblemSet()" style="float: right;">新增习题集</button>
+                                <div>
+                                <label ></label>
+                                </div>
+                                <div>
+                                <label ></label>
+                                </div>
                             </div>
 
                             <hr>
 
                             <div class="form-group">
-                                <h4 class="card-title">新增课程</h4>
+                            <div><h4 class="card-title">新增课程</h4></div>
+                            <div>
+                                <label ></label>
+                                </div>
                                 <label for="add-cid-course">课程ID (cid)</label>
                                 <input type="number" class="form-control" id="add-cid-course" placeholder="输入课程ID">
 
@@ -233,7 +265,7 @@
                                 <label for="add-description-course">课程描述</label>
                                 <input type="text" class="form-control" id="add-description-course" placeholder="输入课程描述">
 
-                                <label for="add-passcode">课程密码</label>
+                                <label for="add-passcode">passcode</label>
                                 <input type="text" class="form-control" id="add-passcode" placeholder="输入课程密码">
 
                                 <label for="add-number">课程号</label>
@@ -242,7 +274,13 @@
                                 <label for="add-owner-id-course">拥有者ID</label>
                                 <input type="number" class="form-control" id="add-owner-id-course" placeholder="输入拥有者ID">
 
-                                <button class="btn btn-success mt-2" onclick="addCourse()">新增课程</button>
+                                <button class="btn btn-success mt-2" onclick="addCourse()" style="float: right;">新增课程</button>
+                                <div>
+                                <label ></label>
+                                </div>
+                                <div>
+                                <label ></label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -258,7 +296,7 @@
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/js/jsvectormap.min.js"
         crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/maps/world.js" crossorigin="anonymous"></script>
+    
 
     <script>
         const submitsituation = {
@@ -298,7 +336,7 @@
 
                 if (problemId) {
                     $.ajax({
-                        url: '<?= Url::to(["admin/delete-problem"]) ?>',
+                        url: '<?= Url::to(["site/delete-problem"]) ?>',
                         type: 'POST',
                         data: { id: problemId },
                         success: function(response) {
@@ -320,7 +358,7 @@
 
                 if (psid) {
                     $.ajax({
-                        url: '<?= Url::to(["admin/delete-problem-set"]) ?>',
+                        url: '<?= Url::to(["site/delet-eproblem-set"]) ?>',
                         type: 'POST',
                         data: { id: psid },
                         success: function(response) {
@@ -342,7 +380,7 @@
 
                 if (cid) {
                     $.ajax({
-                        url: '<?= Url::to(["admin/delete-course"]) ?>',
+                        url: '<?= Url::to(["site/delete-course"]) ?>',
                         type: 'POST',
                         data: { id: cid },
                         success: function(response) {
@@ -360,6 +398,7 @@
 
             // 新增习题
             function addProblem() {
+                const pid = document.getElementById('add-pid').value;
                 const psid = document.getElementById('add-psid').value;
                 const title = document.getElementById('add-title').value;
                 const cases = document.getElementById('add-cases').value;
@@ -367,11 +406,12 @@
                 const memoryLimit = document.getElementById('add-memory_limit').value;
                 const ownerId = document.getElementById('add-owner_id').value;
 
-                if (psid && title && cases && timeLimit && memoryLimit && ownerId) {
+                if (pid&&psid && title && cases && timeLimit && memoryLimit && ownerId) {
                     $.ajax({
-                        url: '<?= Url::to(["admin/add-problem"]) ?>',
+                        url: '<?= Url::to(["site/add-problem"]) ?>',
                         type: 'POST',
                         data: {
+                            pid: pid,
                             psid: psid,
                             title: title,
                             cases: cases,
@@ -403,7 +443,7 @@
 
                 if (psidSet && titleSet && description && duration && cidSet && ownerIdSet) {
                     $.ajax({
-                        url: '<?= Url::to(["admin/add-problem-set"]) ?>',
+                        url: '<?= Url::to(["site/add-problem-set"]) ?>',
                         type: 'POST',
                         data: {
                             psid_set: psidSet,
@@ -437,7 +477,7 @@
 
                 if (cidCourse && titleCourse && descriptionCourse && passcode && number && ownerIdCourse) {
                     $.ajax({
-                        url: '<?= Url::to(["admin/add-course"]) ?>',
+                        url: '<?= Url::to(["site/add-course"]) ?>',
                         type: 'POST',
                         data: {
                             cid_course: cidCourse,

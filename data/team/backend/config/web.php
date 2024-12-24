@@ -50,6 +50,20 @@ $config = [
             ],
         ],
         */
+        'db' => $db,
+        'urlManager' => [
+            'enablePrettyUrl' => true, // 启用美化的URL
+            'showScriptName' => false, // 隐藏index.php
+            'rules' => [
+                'site/delete-problem' => 'site/delete-problem', // 映射到 SiteController 的 deleteProblem 方法
+                'site/delete-problem-set' => 'site/delete-problem-set', // 映射到 SiteController 的 deleteProblemSet 方法
+                'site/delete-course' => 'site/delete-course', // 映射到 SiteController 的 deleteCourse 方法
+                'site/add-problem' => 'site/add-problem', // 映射到 SiteController 的 addProblem 方法
+                'site/add-problem-set' => 'site/add-problem-set', // 映射到 SiteController 的 addProblemSet 方法
+                'site/add-course' => 'site/add-course', // 映射到 SiteController 的 addCourse 方法
+            ],
+        ],
+
     ],
     'params' => $params,
 ];
