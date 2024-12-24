@@ -1,0 +1,48 @@
+// ==UserScript==
+// @name         百度搜索去广告
+// @namespace    http://tampermonkey.net/
+// @version      0.1
+// @description  去广告
+// @author       2211437刘家骥
+// @match        https://www.baidu.com/*
+// @icon         https://www.google.com/s2/favicons?sz=64&domain=baidu.com
+// @license      AGPL -3.0
+// @grant        none
+// ==/UserScript==
+
+(function () {
+    'use strict';
+
+    // 要去除的元素的XPath列表
+    const xpaths = [
+        '//*[@id="s-hotsearch-wrapper"]',
+        '//*[@id="u1"]/div[1]',
+        '//*[@id="s_side_wrapper"]',
+        '//*[@id="content_right"]',
+        '//*[@id="top-ad"]',
+        '//*[@id="con-ar"]',
+        '//*[@id="s_wrap"]',
+    ];
+
+    // 根据XPath移除元素
+    function removeElementsByXPath(xpath) {
+        const elements = document.evaluate(xpath, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE, null);
+        for (let i = 0; i < elements.snapshotLength; i++) {
+            const element = elements.snapshotItem(i);
+            element.parentNode.removeChild(element);
+        }
+    }
+
+    // 移除所有指定的元素
+    function removeAllElements() {
+        xpaths.forEach(removeElementsByXPath);
+    }
+
+    // 在页面加载完成前隐藏元素
+    hideAllElements();
+
+    // 在页面加载完成后移除元素
+    window.addEventListener('load', removeAllElements);
+
+    // 为保证去除彻底，运用了两种方法同时去除
+})();
