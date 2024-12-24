@@ -9,10 +9,10 @@
       <div class="main-section">
         <!-- 显示课程信息 -->
         <h1 class="title">{{ course.description }}</h1>
-        <p class="subtitle">课程 ID: #{{ course.number }}</p>
+        <p class="subtitle">课程 ID: #{{ this.cid }}</p>
         <div class="problemsets">
           <h3 class="section-title">
-            <i class="icon">📖</i> 考试题目 >>
+            <i class="icon">📖</i> 作业习题集 >>
           </h3>
           <div v-if="problemsets.length > 0">
             <ul class="problem-list">
@@ -23,7 +23,7 @@
                 @click="goToProblem(problemset.psid,this.uid)" 
               >
                 <div class="problem-title">
-                  第{{ problemset.psid }}题: {{ problemset.title }}
+                  习题集{{ problemset.psid }}: {{ problemset.title }}
                 </div>
                 <div 
                   class="problem-status"
@@ -38,7 +38,7 @@
               </li>
             </ul>
           </div>
-          <p v-else class="no-problems">暂无考试题目</p>
+          <p v-else class="no-problems">暂无作业题目</p>
         </div>
       </div>
       <div class="team-section">

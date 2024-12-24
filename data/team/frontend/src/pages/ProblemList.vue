@@ -15,7 +15,7 @@
     <!-- 问题列表 -->
     <div class="problem-list">
       <h3 class="section-title">
-        <i class="icon">📖</i> 作业题目
+        <i class="icon">📖</i> 作业列表
       </h3>
       <div v-if="problems.length > 0">
         <ul class="problem-items">

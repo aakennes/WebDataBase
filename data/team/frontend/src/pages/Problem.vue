@@ -10,7 +10,9 @@
         <li><strong>编号：</strong> {{ problem[0].pid }}</li>
         <li><strong>时间限制：</strong> {{ problem[0].time_limit }} ms</li>
         <li><strong>空间限制：</strong> {{ problem[0].memory_limit }} KiB</li>
-        <li><strong>最高分：</strong> {{ highestScore !== null ? highestScore : '未提交' }}</li>
+        <li><strong>历史最高分：</strong> 
+          <span :class="scoreClass">{{ highestScore !== null ? highestScore : '未提交' }}</span>
+        </li>
         <li><strong>通过率：</strong> {{ problem[0].submit_ac }} / {{ problem[0].submit_all }}</li>
         <li><strong>评测全部测试点：</strong> 是</li>
         <li><strong>Special Judge：</strong> 未启用</li>
@@ -51,7 +53,7 @@
 <script>
   export default {
     name: 'ProblemPage',
-    props: ["psid", "uid"], // 从父组件或 URL 中传递课程 ID (cid)
+    props: ["psid", "uid", "pid"], // 从父组件或 URL 中传递课程 ID (cid)
     data() {
       return {
         problem: [], // 从后端加载的习题详情
@@ -59,6 +61,19 @@
         showSubmitDialog: false, // 控制提交对话框的显示
         submissionCode: '' // 存储用户输入的代码
       };
+    },
+    computed: {
+      scoreClass() {
+        if (this.highestScore === null) {
+          return '';
+        } else if (this.highestScore < 60) {
+          return 'score-low';
+        } else if (this.highestScore >= 60 && this.highestScore < 90) {
+          return 'score-medium';
+        } else {
+          return 'score-high';
+        }
+      }
     },
     created() {
 
@@ -71,6 +86,7 @@
 
       if(this.uid) {
         this.fetchHighestScore();
+        console.log("当前用户的uid", this.uid);
       } else {
         console.error('未提供 uid 或 psid 参数');
       }
@@ -85,7 +101,6 @@
           }
           const data = await response.json();
           this.problem = data;
-          this.pid = this.problem[0].pid;
           console.log("解决问题的关键就是问题的关键",this.problem)
           if (this.problem.length > 0) {
               console.log("习题详情", this.problem[0].title);
@@ -100,6 +115,7 @@
       // 从后端获取当前用户在该问题上的最高分
       async fetchHighestScore() {
         try {
+          console.log("Fetching highest score for uid:", this.uid, "and pid:", this.pid); // 添加日志
           const response = await fetch(`http://localhost:3000/api/highestScore?uid=${this.uid}&pid=${this.pid}`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -310,6 +326,21 @@
 .submit-message.error {
   background: #f8d7da;
   color: #721c24;
+}
+
+.score-low {
+  font-weight: bold;
+  color: red;
+}
+
+.score-medium {
+  font-weight: bold;
+  color: orange;
+}
+
+.score-high {
+  font-weight: bold;
+  color: green;
 }
   </style>
   

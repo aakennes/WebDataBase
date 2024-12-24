@@ -187,8 +187,6 @@ app.get('/api/problemsets', (req, res) => {
 // API 路由：根据 psid 获取习题集具体信息
 app.get('/api/problemset', (req, res) => {
 
-  console.log("!!!!!!!!!!!!!!!!!!!!!!!!!已进入problemlist.js");
-
   const { psid } = req.query; // 从 URL 参数中获取 psid
 
   // 确保提供了 psid 参数
@@ -217,8 +215,6 @@ app.get('/api/problemset', (req, res) => {
       console.error('查询数据库失败:', err);
       return res.status(500).send('数据库查询失败');
     }
-
-    console.log("到底有没有！！！！！！！！！",results);
 
     // 如果查询到结果，返回结果；否则返回 404
     if (results.length > 0) {
@@ -324,6 +320,7 @@ app.get('/api/highestScore', (req, res) => {
   if (!uid || !pid) {
     return res.status(400).send('uid 和 pid 参数是必须的');
   }
+
 
   const query = `
     SELECT MAX(score) AS highestScore
