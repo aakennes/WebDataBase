@@ -8,23 +8,23 @@ user   -> 个人
 
 前台界面 : Vue.js(https://vuejs.org/api/)
 
-后台界面 : Yii
+登录界面及前台界面后端 : node.js
+
+后台界面 : Yii2
+
+后台界面后端 : php
 
 登录端口 : 5000
-
-前台界面 : 8080
-
-后台界面 : 8081
 
 如果以上端口被占用，需要清理以上端口
 
 ## 文件结构
 ```
---team-- login	--
-	|		
-	----frontend--
-	|
-	----backend	--
+--  team---  login       --
+	 |		
+	 +---  frontend     --
+	 |
+	 +---  backend	     --
 ```
 
 ## 环境要求
@@ -43,6 +43,8 @@ Composer 2.2.6 +
 在team文件夹中使用以下指令初始化并运行:
 
 ```bash
+# 加载数据库
+make refresh-db
 # 初始化并运行
 make all
 # 安装所需安装包
@@ -95,6 +97,8 @@ mysqldump -u root -p Web_Database > Web_Database_backup.sql
 
 ### user.csv
 
+用户表, 表明了用户信息
+
 主键 : "uid"
 
 其他键 : "gid","nickname","email","color","acnum","allnum"
@@ -103,7 +107,11 @@ mysqldump -u root -p Web_Database > Web_Database_backup.sql
 
 ### user_message.csv
 
+留言表
 
+主键 : umid
+
+其他键 : from_uid, to_uid, text
 
 ### message.csv
 

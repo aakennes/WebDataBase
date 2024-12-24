@@ -3,8 +3,10 @@ NPM_VERSION_MIN := 10.7.0
 MYSQL_VERSION_MIN := 5.7
 PHP_VERSION_MIN := 8.1
 COMPOSER_VERSION_MIN := 2.2.6
+DB_NAME := Web_Database
+SQL_FILE := ../install.sql
 
-.PHONY: all install start
+.PHONY: all install start refresh-db
 
 all: install start
 
@@ -48,6 +50,15 @@ install:
 	cd backend && composer install
 	sudo chmod 1733 /var/lib/php/sessions
 	@echo "Environment setup complete."
+
+refresh-db:
+	@echo "Refreshing MySQL database..."
+	@if [ -f "$(SQL_FILE)" ]; then \
+		mysql -u root -p $(DB_NAME) < $(SQL_FILE) && \
+		echo "Database refreshed successfully."; \
+	else \
+		echo "SQL file $(SQL_FILE) not found. Skipping database refresh."; \
+	fi
 
 start:
 	@echo "Starting the project..."
