@@ -101,9 +101,9 @@ mysqldump -u root -p Web_Database > Web_Database_backup.sql
 
 主键 : "uid"
 
-其他键 : "gid","nickname","email","color","acnum","allnum"
+其他键 : "nickname","email","color","acnum","allnum","author"
 
-无用键 : "qq","tel","realname","school","words","signup_time","removed","password"
+无用键 : "gid","qq","tel","realname","school","words","signup_time","removed","password"
 
 ### user_message.csv
 

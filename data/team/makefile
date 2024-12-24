@@ -44,10 +44,10 @@ install:
 	fi
 
 	@echo "Initializing project dependencies..."
-	cd login && npm install
-	cd frontend && npm install
-	cd frontend/frontendBack && npm install
-	cd backend && composer install
+	cd login && npm install && \
+	cd ../frontend && npm install && \
+	cd frontendBack && npm install && \
+	cd ../../backend && composer install && \
 	sudo chmod 1733 /var/lib/php/sessions
 	@echo "Environment setup complete."
 
