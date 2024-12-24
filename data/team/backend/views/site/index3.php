@@ -17,34 +17,16 @@ use yii\helpers\Html;
 
 <body class="layout-fixed sidebar-expand-lg bg-body-tertiary"> <!--begin::App Wrapper-->
     <div class="app-wrapper"> <!--begin::Header-->
+        <!-- Header -->
         <nav class="app-header navbar navbar-expand bg-body">
             <div class="container-fluid">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="../../dist/assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow"
-                                alt="User Image">
-<<<<<<< HEAD
-                            <span class="d-none d-md-inline"><?= $username ?></span>
-=======
+                            
                             <!-- 显示用户姓名 -->
                         <span class="d-none d-md-inline"><?= $username ?></span>
->>>>>>> b0d7beb (id索引添加，增删管理初步)
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
-                            <li class="user-header text-bg-primary">
-                                <img src="../../dist/assets/img/user2-160x160.jpg" class="rounded-circle shadow"
-                                    alt="User Image">
-                                <p>
-                                    Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2023</small>
-                                </p>
-                            </li>
-                            <li class="user-footer">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
-                                <a href="#" class="btn btn-default btn-flat float-end">Sign out</a>
-                            </li>
-                        </ul>
                     </li>
                 </ul>
             </div>
