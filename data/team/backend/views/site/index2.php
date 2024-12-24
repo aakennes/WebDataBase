@@ -119,7 +119,7 @@ use yii\helpers\Json;
                         <div class="col-md-12">
                             <div class="card mb-4">
                                 <div class="card-header">
-                                    <h5 class="card-title">该习题集习题提交情况</h5>
+                                    <h5 class="card-title"><?=$setname?>习题提交情况</h5>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button>
                                         <div class="btn-group"> <button type="button" class="btn btn-tool dropdown-toggle" data-bs-toggle="dropdown"> <i class="bi bi-wrench"></i> </button>
                                             <div class="dropdown-menu dropdown-menu-end" role="menu"> <a href="#" class="dropdown-item">Action</a> <a href="#" class="dropdown-item">Another action</a> <a href="#" class="dropdown-item">
@@ -189,7 +189,7 @@ use yii\helpers\Json;
                             
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">该习题集最近提交记录</h3>
+                                    <h3 class="card-title"><?=$setname?>最近提交记录</h3>
                                     <div class="card-tools"> <button type="button" class="btn btn-tool" data-lte-toggle="card-collapse"> <i data-lte-icon="expand" class="bi bi-plus-lg"></i> <i data-lte-icon="collapse" class="bi bi-dash-lg"></i> </button> <button type="button" class="btn btn-tool" data-lte-toggle="card-remove"> <i class="bi bi-x-lg"></i> </button> </div>
                                 </div> <!-- /.card-header -->
                                 <div class="card-body p-0">

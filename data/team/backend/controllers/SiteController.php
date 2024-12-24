@@ -523,6 +523,11 @@ class SiteController extends Controller
             $psid = 81;
         }
 
+        $setname = Problemset::find()
+            ->select(['title'])
+            ->where(['psid' => $psid])
+            ->scalar(); // 返回单个字段值
+
         $allstu = 0;
         $allstu = ProblemsetUser::find()
             ->where(['psid' => $psid])
@@ -650,7 +655,7 @@ class SiteController extends Controller
         return $this->render('index2', [
 
             'username' => $username,
-
+            'setname' => $setname,
             'allstu' => $allstu,
             'totalSubmissions' => $totalSubmissions,
             'totalUsers' => $totalUsers,
