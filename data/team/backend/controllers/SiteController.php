@@ -28,19 +28,31 @@ use app\models\Usercon;
 
 class SiteController extends Controller
 {   
+
     // 删除习题
     public function actionDeleteProblem()
     {
         $id = Yii::$app->request->post('id');
         $model = $this->findProblem($id);
 
-        if ($model && $model->delete()) {
+        // 从 session 中获取 uid
+        $sessionUid = Yii::$app->session->get('uid', null);
+        
+        // 如果 session 中没有 uid，则抛出异常
+        if ($sessionUid === null) {
+            throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
+        }
+        
+        $uid = $sessionUid;
+        if( $model&& $model->owner_id == $uid){
+        if ( $model->delete()) {
             // 删除成功
             Yii::$app->session->setFlash('success', '习题删除成功');
             
         } else {
             Yii::$app->session->setFlash('error', '习题删除失败');
             
+        }
         }
 
         return $this->redirect(['index']);
@@ -52,12 +64,23 @@ class SiteController extends Controller
         $id = Yii::$app->request->post('id');
         $model = $this->findProblemSet($id);
 
-        if ($model && $model->delete()) {
+        // 从 session 中获取 uid
+        $sessionUid = Yii::$app->session->get('uid', null);
+        
+        // 如果 session 中没有 uid，则抛出异常
+        if ($sessionUid === null) {
+            throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
+        }
+        
+        $uid = $sessionUid;
+        if( $model&& $model->owner_id == $uid){
+        if ( $model->delete()) {
             // 删除成功
             Yii::$app->session->setFlash('success', '习题集删除成功');
         } else {
             Yii::$app->session->setFlash('error', '习题集删除失败');
         }
+    }
 
         return $this->redirect(['index']);
     }
@@ -68,13 +91,23 @@ class SiteController extends Controller
         $id = Yii::$app->request->post('id');
         $model = $this->findCourse($id);
 
+        // 从 session 中获取 uid
+        $sessionUid = Yii::$app->session->get('uid', null);
+        
+        // 如果 session 中没有 uid，则抛出异常
+        if ($sessionUid === null) {
+            throw new \yii\web\BadRequestHttpException('无法找到有效的 UID');
+        }
+        
+        $uid = $sessionUid;
+        if( $model&& $model->owner_id == $uid){
         if ($model && $model->delete()) {
             // 删除成功
             Yii::$app->session->setFlash('success', '课程删除成功');
         } else {
             Yii::$app->session->setFlash('error', '课程删除失败');
         }
-
+    }
         return $this->redirect(['index']);
     }
 
@@ -131,6 +164,8 @@ class SiteController extends Controller
             // 将 submit_ac 和 submit_all 设置为 "暂无"
             $model->submit_ac = 0;
             $model->submit_all = 0;
+
+
             // 验证模型数据并保存
             if ($model->validate() && $model->save()) {
                 // 返回成功信息
