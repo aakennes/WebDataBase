@@ -32,31 +32,24 @@ user   -> 个人
 环境要求:
 
 ```
-npm 10.7.0+
-mysql 5.7+
-@vue/cli 5.0.8
-node v22.12.0
+npm 10.7.0 +
+mysql 5.7 +
+node v22.12.0 +
+php 8.1 +
+Composer 2.2.6 +
 ```
 
 
 在team文件夹中使用以下指令初始化并运行:
 
 ```bash
-# 前台
-cd frontend
-npm install
-cd frontend/frontendBack
-npm install
-cd ../../login
-npm install
-npm start
-# 后台
-sudo chmod 1733 /var/lib/php/sessions
+# 初始化并运行
+make all
+# 安装所需安装包
+make install
+# 运行项目
+make start
 ```
-
-UPDATE problem p
-JOIN temptable t ON p.pid = t.pid
-SET p.title = t.title;
 
 ## 数据表说明
 
