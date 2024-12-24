@@ -189,15 +189,15 @@ use yii\helpers\Html;
 
         const sub_chart_options = {
             series: [{
-                name: "高级程序语言设计2-2",
+                name: <?= json_encode($courseNames[0]) ?>,
                 data: <?= json_encode($results[0]['pass_rates'], JSON_NUMERIC_CHECK) ?>,
             },
             {
-                name: "Alg2024",
+                name: <?= json_encode($courseNames[1]) ?>,
                 data: <?= json_encode($results[1]['pass_rates'], JSON_NUMERIC_CHECK) ?>,
             },
             {
-                name: "密码学基础2024",
+                name: <?= json_encode($courseNames[2]) ?>,
                 data: <?= json_encode($results[2]['pass_rates'], JSON_NUMERIC_CHECK) ?>
             },
             ],
