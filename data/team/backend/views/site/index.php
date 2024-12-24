@@ -231,8 +231,14 @@
                                 <label for="add-description">描述</label>
                                 <input type="text" class="form-control" id="add-description" placeholder="输入描述">
 
-                                <label for="add-during">时长</label>
-                                <input type="number" class="form-control" id="add-during" placeholder="输入时长">
+                                
+                                <label for="add-start-time">开始时间</label>
+                                <input type="datetime-local" class="form-control" id="add-start-time" placeholder="选择开始时间">
+
+
+                                <label for="add-end-time">结束时间</label>
+                                <input type="datetime-local" class="form-control" id="add-end-time" placeholder="选择结束时间">
+
 
                                 <label for="add-cid-set">课程ID</label>
                                 <input type="number" class="form-control" id="add-cid-set" placeholder="输入课程ID">
@@ -342,9 +348,6 @@
                         success: function(response) {
                             alert(response.message);
                             location.reload(); // 刷新页面，显示删除后的状态
-                        },
-                        error: function() {
-                            alert('删除失败，请稍后再试。');
                         }
                     });
                 } else {
@@ -358,15 +361,12 @@
 
                 if (psid) {
                     $.ajax({
-                        url: '<?= Url::to(["site/delet-eproblem-set"]) ?>',
+                        url: '<?= Url::to(["site/delete-problem-set"]) ?>',
                         type: 'POST',
                         data: { id: psid },
                         success: function(response) {
                             alert(response.message);
                             location.reload(); // 刷新页面，显示删除后的状态
-                        },
-                        error: function() {
-                            alert('删除失败，请稍后再试。');
                         }
                     });
                 } else {
@@ -386,9 +386,6 @@
                         success: function(response) {
                             alert(response.message);
                             location.reload(); // 刷新页面，显示删除后的状态
-                        },
-                        error: function() {
-                            alert('删除失败，请稍后再试。');
                         }
                     });
                 } else {
@@ -420,11 +417,9 @@
                             owner_id: ownerId
                         },
                         success: function(response) {
-                            alert(response.message);
+                            const res = JSON.parse(response); // 解析返回的 JSON 数据
+                            alert(res.message); // 提示新增结果
                             location.reload(); // 刷新页面，显示新增后的状态
-                        },
-                        error: function() {
-                            alert('新增失败，请稍后再试。');
                         }
                     });
                 } else {
@@ -432,33 +427,32 @@
                 }
             }
 
-            // 新增习题集
             function addProblemSet() {
                 const psidSet = document.getElementById('add-psid-set').value;
                 const titleSet = document.getElementById('add-title-set').value;
                 const description = document.getElementById('add-description').value;
-                const duration = document.getElementById('add-during').value;
+                const startTime = document.getElementById('add-start-time').value;
+                const endTime = document.getElementById('add-end-time').value;
                 const cidSet = document.getElementById('add-cid-set').value;
                 const ownerIdSet = document.getElementById('add-owner-id-set').value;
 
-                if (psidSet && titleSet && description && duration && cidSet && ownerIdSet) {
+                if (psidSet && titleSet && description && startTime&& endTime && cidSet && ownerIdSet) {
                     $.ajax({
-                        url: '<?= Url::to(["site/add-problem-set"]) ?>',
+                        url: '<?= Url::to(["site/add-problem-set"]) ?>', // 调用后台的 `add-problem-set` 方法
                         type: 'POST',
                         data: {
                             psid_set: psidSet,
                             title_set: titleSet,
                             description: description,
-                            duration: duration,
+                            start_time: startTime,
+                            end_time: endTime,
                             cid_set: cidSet,
                             owner_id_set: ownerIdSet
                         },
                         success: function(response) {
-                            alert(response.message);
+                            const res = JSON.parse(response); // 解析返回的 JSON 数据
+                            alert(res.message); // 提示新增结果
                             location.reload(); // 刷新页面，显示新增后的状态
-                        },
-                        error: function() {
-                            alert('新增失败，请稍后再试。');
                         }
                     });
                 } else {
@@ -488,11 +482,9 @@
                             owner_id_course: ownerIdCourse
                         },
                         success: function(response) {
-                            alert(response.message);
+                            const res = JSON.parse(response); // 解析返回的 JSON 数据
+                            alert(res.message); // 提示新增结果
                             location.reload(); // 刷新页面，显示新增后的状态
-                        },
-                        error: function() {
-                            alert('新增失败，请稍后再试。');
                         }
                     });
                 } else {

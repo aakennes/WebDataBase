@@ -29,23 +29,27 @@ use app\models\Usercon;
 class SiteController extends Controller
 {   
     // 删除习题
-    public function actionDeleteProblem($id)
+    public function actionDeleteProblem()
     {
+        $id = Yii::$app->request->post('id');
         $model = $this->findProblem($id);
 
         if ($model && $model->delete()) {
             // 删除成功
             Yii::$app->session->setFlash('success', '习题删除成功');
+            
         } else {
             Yii::$app->session->setFlash('error', '习题删除失败');
+            
         }
 
         return $this->redirect(['index']);
     }
 
     // 删除习题集
-    public function actionDeleteProblemSet($id)
-    {
+    public function actionDeleteProblemSet()
+    {   
+        $id = Yii::$app->request->post('id');
         $model = $this->findProblemSet($id);
 
         if ($model && $model->delete()) {
@@ -59,8 +63,9 @@ class SiteController extends Controller
     }
 
     // 删除课程
-    public function actionDeleteCourse($id)
-    {
+    public function actionDeleteCourse()
+    {   
+        $id = Yii::$app->request->post('id');
         $model = $this->findCourse($id);
 
         if ($model && $model->delete()) {
@@ -86,7 +91,7 @@ class SiteController extends Controller
     // 查找习题集
     protected function findProblemSet($id)
     {
-        if (($model = ProblemSet::findOne($id)) !== null) {
+        if (($model = Problemset::findOne($id)) !== null) {
             return $model;
         }
 
@@ -106,33 +111,71 @@ class SiteController extends Controller
     // 新增习题
     public function actionAddProblem()
     {
+        // 创建新的 Problem 模型
         $model = new Problem();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // 数据保存成功
-            Yii::$app->session->setFlash('success', '习题新增成功');
-            return $this->redirect(['index']);
+        // 检查请求是否为 AJAX 且是 POST 请求
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            // 加载 POST 数据
+            $data = Yii::$app->request->post();
+            
+            // 使用获取的数据赋值到模型
+            $model->pid = $data['pid'];
+            $model->psid = $data['psid'];
+            $model->title = $data['title'];
+            $model->cases = $data['cases'];
+            $model->time_limit = $data['time_limit'];
+            $model->memory_limit = $data['memory_limit'];
+            $model->owner_id = $data['owner_id'];
+            
+            // 将 submit_ac 和 submit_all 设置为 "暂无"
+            $model->submit_ac = 0;
+            $model->submit_all = 0;
+            // 验证模型数据并保存
+            if ($model->validate() && $model->save()) {
+                // 返回成功信息
+                return json_encode(['message' => '习题新增成功']);
+            } else {
+                // 返回失败信息
+                return json_encode(['message' => '习题新增失败，请检查数据']);
+            }
         }
 
-        return $this->render('addproblem', [
-            'model' => $model,
-        ]);
+        // 如果不是 AJAX 请求或 POST 请求，直接返回错误
+        return json_encode(['message' => '无效的请求']);
     }
 
     // 新增习题集
     public function actionAddProblemSet()
     {
-        $model = new ProblemSet();
+        $model = new Problemset();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // 数据保存成功
-            Yii::$app->session->setFlash('success', '习题集新增成功');
-            return $this->redirect(['index']);
+        // 检查是否是 AJAX 请求且是 POST 请求
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            // 获取 POST 数据
+            $data = Yii::$app->request->post();
+
+            // 手动将前端传递的数据赋值给模型
+            $model->psid = $data['psid_set']; // 使用传递的习题集 ID
+            $model->title = $data['title_set']; // 使用传递的习题集标题
+            $model->description = $data['description']; // 使用习题集描述
+            $model->start_time = $data['start_time']; // 使用习题集时长
+            $model->end_time = $data['end_time']; // 使用习题集时长
+            $model->cid = $data['cid_set']; // 使用课程 ID
+            $model->owner_id = $data['owner_id_set']; // 使用习题集所有者 ID
+
+            // 验证并保存数据
+            if ($model->validate() && $model->save()) {
+                // 返回成功消息
+                return json_encode(['message' => '习题集新增成功']);
+            } else {
+                // 返回错误消息
+                return json_encode(['message' => '习题集新增失败，请检查数据']);
+            }
         }
 
-        return $this->render('addproblemset', [
-            'model' => $model,
-        ]);
+        // 如果请求不是 AJAX 或 POST 请求，返回无效请求的消息
+        return json_encode(['message' => '无效的请求']);
     }
 
     // 新增课程
@@ -140,15 +183,30 @@ class SiteController extends Controller
     {
         $model = new Course();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // 数据保存成功
-            Yii::$app->session->setFlash('success', '课程新增成功');
-            return $this->redirect(['index']);
+        // 检查是否是 AJAX 请求且是 POST 请求
+        if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
+            // 获取 POST 数据
+            $data = Yii::$app->request->post();
+
+            // 手动将前端传递的数据赋值给模型
+            $model->cid = $data['cid_course']; // 使用传递的课程 ID
+            $model->title = $data['title_course']; // 使用传递的课程标题
+            $model->description = $data['description_course']; // 使用课程描述
+            $model->passcode = $data['passcode']; // 使用课程的 passcode
+            $model->number = $data['number']; // 使用课程的数量
+            $model->owner_id = $data['owner_id_course']; // 使用课程的所有者 ID
+
+            // 验证并保存数据
+            if ($model->validate() && $model->save()) {
+                return json_encode(['message' => '课程新增成功']);
+            } else {
+                // 返回错误消息
+                return json_encode(['message' => '课程新增失败，请检查数据']);
+            }
         }
 
-        return $this->render('addcourse', [
-            'model' => $model,
-        ]);
+        // 如果请求不是 AJAX 或 POST 请求，返回无效请求的消息
+        return json_encode(['message' => '无效的请求']);
     }
 
     
