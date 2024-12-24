@@ -8,23 +8,23 @@ user   -> 个人
 
 前台界面 : Vue.js(https://vuejs.org/api/)
 
-后台界面 : Yii
+登录界面及前台界面后端 : node.js
+
+后台界面 : Yii2
+
+后台界面后端 : php
 
 登录端口 : 5000
-
-前台界面 : 8080
-
-后台界面 : 8081
 
 如果以上端口被占用，需要清理以上端口
 
 ## 文件结构
 ```
---team-- login	--
-	|		
-	----frontend--
-	|
-	----backend	--
+--  team---  login       --
+	 |		
+	 +---  frontend     --
+	 |
+	 +---  backend	     --
 ```
 
 ## 环境要求
@@ -32,31 +32,26 @@ user   -> 个人
 环境要求:
 
 ```
-npm 10.7.0+
-mysql 5.7+
-@vue/cli 5.0.8
-node v22.12.0
+npm 10.7.0 +
+mysql 5.7 +
+node v22.12.0 +
+php 8.1 +
+Composer 2.2.6 +
 ```
 
 
 在team文件夹中使用以下指令初始化并运行:
 
 ```bash
-# 前台
-cd frontend
-npm install
-cd frontend/frontendBack
-npm install
-cd ../../login
-npm install
-npm start
-# 后台
-sudo chmod 1733 /var/lib/php/sessions
+# 加载数据库
+make refresh-db
+# 初始化并运行
+make all
+# 安装所需安装包
+make install
+# 运行项目
+make start
 ```
-
-UPDATE problem p
-JOIN temptable t ON p.pid = t.pid
-SET p.title = t.title;
 
 ## 数据表说明
 
@@ -102,15 +97,21 @@ mysqldump -u root -p Web_Database > Web_Database_backup.sql
 
 ### user.csv
 
+用户表, 表明了用户信息
+
 主键 : "uid"
 
-其他键 : "gid","nickname","email","color","acnum","allnum"
+其他键 : "nickname","email","color","acnum","allnum","author"
 
-无用键 : "qq","tel","realname","school","words","signup_time","removed","password"
+无用键 : "gid","qq","tel","realname","school","words","signup_time","removed","password"
 
 ### user_message.csv
 
+留言表
 
+主键 : umid
+
+其他键 : from_uid, to_uid, text
 
 ### message.csv
 

@@ -76,7 +76,7 @@ app.get('/api/courses', (req, res) => {
         WHERE cu.cid = ? AND u.author = 0
         LIMIT ?, 20
     `;
-    console.log(query);
+    // console.log(query);
 
     db.query(query, [cid, offset], (err, results) => {
       if (err) {
@@ -105,7 +105,7 @@ app.get('/api/courses', (req, res) => {
         console.error("数据库查询错误:", err);
         return res.status(500).send("服务器错误");
       }
-      console.log("查询结果:", JSON.stringify(results, null, 2));
+      // console.log("查询结果:", JSON.stringify(results, null, 2));
       res.json(results);
     });
   });
@@ -114,7 +114,7 @@ app.get('/api/courses', (req, res) => {
 // API 路由：获取课程详情
 app.get('/api/courseInfo', (req, res) => {
   const { cid } = req.query; // 从请求中获取课程 ID (cid)
-  console.log("确认收到的课程 ID (cid)了啊:", cid); // 打印接收到的 cid
+  // console.log("确认收到的课程 ID (cid)了啊:", cid); // 打印接收到的 cid
 
   // 检查是否提供了课程 ID
   if (!cid) {
@@ -215,6 +215,8 @@ app.get('/api/problemset', (req, res) => {
       console.error('查询数据库失败:', err);
       return res.status(500).send('数据库查询失败');
     }
+
+    // console.log("到底有没有！！！！！！！！！",results);
 
     // 如果查询到结果，返回结果；否则返回 404
     if (results.length > 0) {

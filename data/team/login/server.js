@@ -113,7 +113,7 @@ app.post("/api/login", (req, res) => {
                 let backendPort = null;
                 backendCommand.stdout.on('data', (data) => {
                     const output = data.toString();
-                    console.log(`后台服务输出: ${output}`);
+                    // console.log(`后台服务输出: ${output}`);
                     const portMatch = output.match(/http:\/\/localhost:(\d+)/);
                     if (portMatch && !backendPort) {
                         backendPort = portMatch[1];

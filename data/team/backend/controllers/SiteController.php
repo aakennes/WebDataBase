@@ -27,7 +27,131 @@ use yii\helpers\ArrayHelper;
 use app\models\Usercon;
 
 class SiteController extends Controller
-{
+{   
+    // 删除习题
+    public function actionDeleteProblem($id)
+    {
+        $model = $this->findProblem($id);
+
+        if ($model && $model->delete()) {
+            // 删除成功
+            Yii::$app->session->setFlash('success', '习题删除成功');
+        } else {
+            Yii::$app->session->setFlash('error', '习题删除失败');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    // 删除习题集
+    public function actionDeleteProblemSet($id)
+    {
+        $model = $this->findProblemSet($id);
+
+        if ($model && $model->delete()) {
+            // 删除成功
+            Yii::$app->session->setFlash('success', '习题集删除成功');
+        } else {
+            Yii::$app->session->setFlash('error', '习题集删除失败');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    // 删除课程
+    public function actionDeleteCourse($id)
+    {
+        $model = $this->findCourse($id);
+
+        if ($model && $model->delete()) {
+            // 删除成功
+            Yii::$app->session->setFlash('success', '课程删除成功');
+        } else {
+            Yii::$app->session->setFlash('error', '课程删除失败');
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    // 查找习题
+    protected function findProblem($id)
+    {
+        if (($model = Problem::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('找不到对应的习题。');
+    }
+
+    // 查找习题集
+    protected function findProblemSet($id)
+    {
+        if (($model = ProblemSet::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('找不到对应的习题集。');
+    }
+
+    // 查找课程
+    protected function findCourse($id)
+    {
+        if (($model = Course::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('找不到对应的课程。');
+    }
+
+    // 新增习题
+    public function actionAddProblem()
+    {
+        $model = new Problem();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 数据保存成功
+            Yii::$app->session->setFlash('success', '习题新增成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('addproblem', [
+            'model' => $model,
+        ]);
+    }
+
+    // 新增习题集
+    public function actionAddProblemSet()
+    {
+        $model = new ProblemSet();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 数据保存成功
+            Yii::$app->session->setFlash('success', '习题集新增成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('addproblemset', [
+            'model' => $model,
+        ]);
+    }
+
+    // 新增课程
+    public function actionAddCourse()
+    {
+        $model = new Course();
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            // 数据保存成功
+            Yii::$app->session->setFlash('success', '课程新增成功');
+            return $this->redirect(['index']);
+        }
+
+        return $this->render('addcourse', [
+            'model' => $model,
+        ]);
+    }
+
+    
     /**
      * {@inheritdoc}
      */
@@ -591,126 +715,5 @@ class SiteController extends Controller
 
 
 
-    // 删除习题
-    public function actionDeleteProblem($id)
-    {
-        $model = $this->findProblem($id);
-
-        if ($model && $model->delete()) {
-            // 删除成功
-            Yii::$app->session->setFlash('success', '习题删除成功');
-        } else {
-            Yii::$app->session->setFlash('error', '习题删除失败');
-        }
-
-        return $this->redirect(['index']);
-    }
-
-    // 删除习题集
-    public function actionDeleteProblemSet($id)
-    {
-        $model = $this->findProblemSet($id);
-
-        if ($model && $model->delete()) {
-            // 删除成功
-            Yii::$app->session->setFlash('success', '习题集删除成功');
-        } else {
-            Yii::$app->session->setFlash('error', '习题集删除失败');
-        }
-
-        return $this->redirect(['index']);
-    }
-
-    // 删除课程
-    public function actionDeleteCourse($id)
-    {
-        $model = $this->findCourse($id);
-
-        if ($model && $model->delete()) {
-            // 删除成功
-            Yii::$app->session->setFlash('success', '课程删除成功');
-        } else {
-            Yii::$app->session->setFlash('error', '课程删除失败');
-        }
-
-        return $this->redirect(['index']);
-    }
-
-    // 查找习题
-    protected function findProblem($id)
-    {
-        if (($model = Problem::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('找不到对应的习题。');
-    }
-
-    // 查找习题集
-    protected function findProblemSet($id)
-    {
-        if (($model = ProblemSet::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('找不到对应的习题集。');
-    }
-
-    // 查找课程
-    protected function findCourse($id)
-    {
-        if (($model = Course::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException('找不到对应的课程。');
-    }
-
-    // 新增习题
-    public function actionAddProblem()
-    {
-        $model = new Problem();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // 数据保存成功
-            Yii::$app->session->setFlash('success', '习题新增成功');
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('add-problem', [
-            'model' => $model,
-        ]);
-    }
-
-    // 新增习题集
-    public function actionAddProblemSet()
-    {
-        $model = new ProblemSet();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // 数据保存成功
-            Yii::$app->session->setFlash('success', '习题集新增成功');
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('add-problem-set', [
-            'model' => $model,
-        ]);
-    }
-
-    // 新增课程
-    public function actionAddCourse()
-    {
-        $model = new Course();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            // 数据保存成功
-            Yii::$app->session->setFlash('success', '课程新增成功');
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('add-course', [
-            'model' => $model,
-        ]);
-    }
+    
 }
