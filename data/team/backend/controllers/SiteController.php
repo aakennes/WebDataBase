@@ -25,6 +25,7 @@ use app\models\User;
 use app\models\CourseUser;
 use yii\helpers\ArrayHelper;
 use app\models\Usercon;
+use app\models\ProblemsetMaintainer;
 
 class SiteController extends Controller
 {   
@@ -45,6 +46,7 @@ class SiteController extends Controller
         
         $uid = $sessionUid;
         if( $model&& $model->owner_id == $uid){
+            $this->deleteRelatedRecords($model);
         if ( $model->delete()) {
             // 删除成功
             Yii::$app->session->setFlash('success', '习题删除成功');
@@ -56,6 +58,22 @@ class SiteController extends Controller
         }
 
         return $this->redirect(['index']);
+    }
+    // 删除与习题相关的其他记录
+    private function deleteRelatedRecords($problem)
+    {
+        
+        Yii::$app->db->createCommand()
+            ->delete('problem_maintainer', ['pid' => $problem->pid])
+            ->execute();
+
+        Yii::$app->db->createCommand()
+            ->delete('problem_user', ['pid' => $problem->pid])
+            ->execute();
+
+        Yii::$app->db->createCommand()
+            ->delete('solution', ['pid' => $problem->pid])
+            ->execute();
     }
 
     // 删除习题集
@@ -74,6 +92,7 @@ class SiteController extends Controller
         
         $uid = $sessionUid;
         if( $model&& $model->owner_id == $uid){
+            $this->deleteRelatedRecords2($model);
         if ( $model->delete()) {
             // 删除成功
             Yii::$app->session->setFlash('success', '习题集删除成功');
@@ -83,6 +102,22 @@ class SiteController extends Controller
     }
 
         return $this->redirect(['index']);
+    }
+    // 删除与习题相关的其他记录
+    private function deleteRelatedRecords2($problem)
+    {
+        
+        Yii::$app->db->createCommand()
+            ->delete('problemset_maintainer', ['psid' => $problem->psid])
+            ->execute();
+
+        Yii::$app->db->createCommand()
+            ->delete('problemset_user', ['psid' => $problem->psid])
+            ->execute();
+
+        Yii::$app->db->createCommand()
+            ->delete('problem', ['psid' => $problem->psid])
+            ->execute();
     }
 
     // 删除课程
@@ -102,6 +137,7 @@ class SiteController extends Controller
         $uid = $sessionUid;
         if( $model&& $model->owner_id == $uid){
         if ($model && $model->delete()) {
+            $this->deleteRelatedRecords3($model);
             // 删除成功
             Yii::$app->session->setFlash('success', '课程删除成功');
         } else {
@@ -109,6 +145,20 @@ class SiteController extends Controller
         }
     }
         return $this->redirect(['index']);
+    }
+    // 删除与习题相关的其他记录
+    private function deleteRelatedRecords3($problem)
+    {
+        
+        Yii::$app->db->createCommand()
+            ->delete('problemset', ['cid' => $problem->cid])
+            ->execute();
+
+        Yii::$app->db->createCommand()
+            ->delete('course_user', ['cid' => $problem->cid])
+            ->execute();
+
+        
     }
 
     // 查找习题
@@ -147,6 +197,7 @@ class SiteController extends Controller
         // 创建新的 Problem 模型
         $model = new Problem();
 
+        $modelm = new ProblemMaintainer();
         // 检查请求是否为 AJAX 且是 POST 请求
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             // 加载 POST 数据
@@ -161,13 +212,15 @@ class SiteController extends Controller
             $model->memory_limit = $data['memory_limit'];
             $model->owner_id = $data['owner_id'];
             
+            $modelm->pid= $data['pid'];
+            $modelm->uid= $data['owner_id'];
             // 将 submit_ac 和 submit_all 设置为 "暂无"
             $model->submit_ac = 0;
             $model->submit_all = 0;
 
 
             // 验证模型数据并保存
-            if ($model->validate() && $model->save()) {
+            if ($model->validate() && $model->save()&&$modelm->validate() && $modelm->save()) {
                 // 返回成功信息
                 return json_encode(['message' => '习题新增成功']);
             } else {
@@ -185,6 +238,7 @@ class SiteController extends Controller
     {
         $model = new Problemset();
 
+        $modelm = new ProblemsetMaintainer();
         // 检查是否是 AJAX 请求且是 POST 请求
         if (Yii::$app->request->isAjax && Yii::$app->request->isPost) {
             // 获取 POST 数据
@@ -199,8 +253,10 @@ class SiteController extends Controller
             $model->cid = $data['cid_set']; // 使用课程 ID
             $model->owner_id = $data['owner_id_set']; // 使用习题集所有者 ID
 
+            $modelm->psid=$data['psid_set'];
+            $modelm->uid=$data['owner_id_set'];
             // 验证并保存数据
-            if ($model->validate() && $model->save()) {
+            if ($model->validate() && $model->save()&&$modelm->validate() && $modelm->save()) {
                 // 返回成功消息
                 return json_encode(['message' => '习题集新增成功']);
             } else {
