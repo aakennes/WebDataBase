@@ -1,6 +1,9 @@
 <template>
   <div class="container">
     
+     <!-- 返回上级页面按钮 -->
+    <button class="back-button" @click="goBack">返回</button>
+
     <div class="content-wrapper">
       
       <!-- 左侧团队信息 -->
@@ -200,6 +203,10 @@
         const uid = this.uid; // 当前用户的 UID
         window.location.href = `profile.html?uid=${uid}&profileid=${profileId}`;
       },
+      // 返回上级页面
+      goBack() {
+        window.history.back();
+      }
     }
   };
 </script>
@@ -216,7 +223,26 @@
   font-family: Arial, sans-serif;
   display: flex;
   flex-direction: row;
+  position: relative; /* 添加相对定位 */
 }
+
+.back-button {
+  position: absolute; /* 绝对定位 */
+  top: 20px; /* 距离顶部 20px */
+  left: 20px; /* 距离左侧 20px */
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
 
 .content-wrapper {
   display: flex;
