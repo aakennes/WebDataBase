@@ -44,10 +44,10 @@ install:
 	fi
 
 	@echo "Initializing project dependencies..."
-	cd login && npm install && \
-	cd ../frontend && npm install && \
-	cd frontendBack && npm install && npm install -g @vue/cli \
-	cd ../../backend && composer install && \
+	cd login && rm package-lock.json && npm install
+	cd frontend && rm package-lock.json && npm install
+	cd frontend/frontendBack && rm package-lock.json && npm install && npm install -g @vue/cli
+	cd backend && composer install
 	sudo chmod 1733 /var/lib/php/sessions
 	@echo "Environment setup complete."
 
