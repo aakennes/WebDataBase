@@ -1,6 +1,8 @@
 <template>
  <div class="container">
     <!-- 题目配置 -->
+     <!-- 返回上级页面按钮 -->
+    <button class="back-button" @click="goBack">返回</button>
     <div class="section-title">
       <h2>📖 题目</h2>
     </div>
@@ -156,7 +158,11 @@
           this.submitMessage = '提交失败';
           this.submitSuccess = false;
         }
-      }
+      },
+      // 返回上级页面
+    goBack() {
+        window.history.back();
+    }
     },
   };
 </script>
@@ -169,7 +175,27 @@
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* 添加相对定位 */
+  padding-top: 60px; /* 增加顶部内边距 */
 }
+
+.back-button {
+  position: absolute; /* 绝对定位 */
+  top: 20px; /* 距离顶部 20px */
+  left: 20px; /* 距离左侧 20px */
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
 
 .section-title {
   font-size: 20px;

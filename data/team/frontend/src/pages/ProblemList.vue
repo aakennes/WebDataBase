@@ -1,11 +1,15 @@
 <template>
 <div class="container">
-    <!-- 标题 -->
-    <h1 class="title">{{ problemSet.title }}</h1>
-    <p class="subtitle">作业 ID: #{{ problemSet.psid }}</p>
+
+
+    <!-- 返回上级页面按钮 -->
+    <button class="back-button" @click="goBack">返回</button>
 
     <!-- 描述部分 -->
     <div class="problemset-meta">
+      <!-- 标题 -->
+    <h1 class="title">{{ problemSet.title }}</h1>
+    <p class="subtitle">作业 ID: #{{ problemSet.psid }}</p>
       <p><strong>描述:</strong> {{ problemSet.description }}</p>
       <p><strong>课程 ID:</strong> {{ problemSet.cid }}</p>
       <p><strong>开始时间:</strong> {{ formatTime(problemSet.start_time) }}</p>
@@ -94,6 +98,10 @@ export default {
     },
     goToProblemDetails(psid,uid,pid){
         window.location.href = `Problem.html?psid=${psid}&uid=${uid}&pid=${pid}`;
+    },
+    // 返回上级页面
+    goBack() {
+        window.history.back();
     }
   }
 };
@@ -107,7 +115,27 @@ export default {
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative; /* 添加相对定位 */
+  padding-top: 80px; /* 增加顶部内边距 */
 }
+
+.back-button {
+  position: absolute; /* 绝对定位 */
+  top: 20px; /* 距离顶部 20px */
+  left: 20px; /* 距离左侧 20px */
+  margin-bottom: 20px;
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
 
 .title {
   font-size: 35px;

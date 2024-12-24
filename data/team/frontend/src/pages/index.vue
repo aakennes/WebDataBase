@@ -39,9 +39,7 @@
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log("data出来了没！！！！",data);
         this.courses = data || []; // 更新课程数据
-        console.log("hahahhahahahhahaha",this.courses)
       } catch (error) {
         console.error('获取课程数据失败:', error);
       }
